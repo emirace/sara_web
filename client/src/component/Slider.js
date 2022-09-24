@@ -23,6 +23,7 @@ const Content = styled.div`
   -ms-overflow-style: none;
   scrollbar-width: none;
   scroll-snap-type: inline mandatory;
+  transition: all 3s ease;
 
   & > * {
     scroll-snap-align: start;

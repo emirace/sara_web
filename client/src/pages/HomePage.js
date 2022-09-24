@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import About from "../component/About";
 import Footer from "../component/Footer";
@@ -19,6 +20,16 @@ const Button = styled.div`
   cursor: pointer;
   padding: 5px 7px;
   display: inline-block;
+  font-size: 15px;
+  &:hover {
+    color: black;
+  }
+`;
+const Title = styled.div`
+  font-size: 50px;
+  margin: 0 5vw 10px 5vw;
+  text-transform: capitalize;
+  text-align: center;
 `;
 export default function HomePage() {
   return (
@@ -30,9 +41,13 @@ export default function HomePage() {
         <SmallBanner />
       </Section>
       <Section>
+        <Title>Our Products</Title>
+
         <ProductList />
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button>VIEW ALL</Button>
+          <Link to="/gallery">
+            <Button>VIEW ALL</Button>
+          </Link>
         </div>
       </Section>
       <Section>
@@ -41,9 +56,6 @@ export default function HomePage() {
       </Section>
       <Section>
         <SocialLink />
-      </Section>
-      <Section>
-        <Footer />
       </Section>
     </Container>
   );

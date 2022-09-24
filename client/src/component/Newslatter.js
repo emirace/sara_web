@@ -54,12 +54,15 @@ const Button = styled.div`
 const Input = styled.input`
   height: 40px;
   width: 500px;
-  padding: 0;
+  padding: 0 5px;
   border: 0;
   border-top-left-radius: 0.2rem;
   border-bottom-left-radius: 0.2rem;
   &:focus-visible {
     outline: none;
+  }
+  @media (max-width: 480px) {
+    width: 350px;
   }
 `;
 const Row = styled.div`

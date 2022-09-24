@@ -4,12 +4,16 @@ import { color } from "../constant/parameters";
 
 const Image = styled.img`
   width: 100%;
+  height: 500px;
   object-fit: cover;
 `;
 const Detail = styled.div`
   position: absolute;
   left: 50%;
   top: 30px;
+  @media (max-width: 480px) {
+    left: 35%;
+  }
 `;
 const Text = styled.div`
   font-size: 50px;
@@ -42,16 +46,6 @@ export default function About() {
           convallis eget. Mauris nibh augue, mattis vel condimentum in,
           tincidunt ac velit. Morbi aliquet nisl in nisl posuere, eget euismod
           nulla lobortis. Nunc sagittis dictum velit egestas malesuada.
-        </SmallText>
-        <SmallText>
-          Suspendisse potenti. Curabitur blandit felis eget augue elementum
-          pellentesque. Sed sed bibendum magna. Orci varius natoque penatibus et
-          magnis dis parturient montes, nascetur ridiculus mus. Duis eget nisi
-          risus. Sed et posuere nibh, vel tristique tortor. Cras in nibh dui.
-          Phasellus faucibus posuere orci in placerat. Phasellus interdum id
-          tellus non dignissim. Aenean et augue ante. Cras ornare faucibus ante
-          ut condimentum. Praesent luctus lacus non venenatis sodales. Duis
-          sapien leo, mattis eget consectetur sed, congue mollis elit.
         </SmallText>
         <Button>Read more</Button>
       </Detail>
