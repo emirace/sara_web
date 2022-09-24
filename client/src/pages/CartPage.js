@@ -156,7 +156,7 @@ export default function CartPage() {
               <SumCont>
                 <SumItem>
                   <SumKey>Subtotal</SumKey>
-                  <SumValue>$99</SumValue>
+                  <SumValue>${cart.reduce((a, c) => a + c.price, 0)}</SumValue>
                 </SumItem>
 
                 <SumItem>
