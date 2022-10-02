@@ -24,10 +24,11 @@ const Detail = styled.div`
 const Text = styled.div`
   font-size: 50px;
   font-weight: 200;
+  text-align: center;
 `;
 const SmallText = styled.p`
   font-weight: 200;
-  padding-right: 20px;
+  padding: 0 10px;
   text-align: justify;
   max-width: 800px;
   text-align: center;
@@ -62,7 +63,7 @@ const Input = styled.input`
     outline: none;
   }
   @media (max-width: 480px) {
-    width: 350px;
+    width: 280px;
   }
 `;
 const Row = styled.div`

@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { color } from "../constant/parameters";
 
 const Container = styled.div`
-  padding: 0 5vw;
+  padding: 5vw;
+  background: ${color.background2};
 `;
 const Content = styled.div`
   display: flex;
@@ -13,6 +14,7 @@ const Content = styled.div`
 `;
 const Col = styled.div`
   flex: 1;
+  padding-right: 20px;
 `;
 const Logo = styled.h3``;
 const Text = styled.p``;
@@ -47,7 +49,7 @@ export default function Footer() {
             fringilla id dignissim non, pulvinar sed ni
           </Text>
         </Col>
-        <Col style={{ paddingLeft: "20px" }}>
+        <Col>
           <Header>Navigation</Header>
           <Ul>
             <Li>HomePage</Li>

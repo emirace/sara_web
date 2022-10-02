@@ -15,6 +15,12 @@ import OwambePage from "./pages/OwambePage";
 import AccessoriesPage from "./pages/AccessoriesPage";
 import BookOrderScreen from "./pages/BookOrderScreen";
 import CartPage from "./pages/CartPage";
+import DeliveryPage from "./pages/DeliveryPage";
+import DashboardPage from "./pages/DashboardPage";
+import BookDeliveryPage from "./pages/BookDeliveryPage";
+import AddProductPage from "./pages/AddProductPage";
+import AddImagePage from "./pages/AddImagePage";
+import SearchPage from "./pages/SearchPage";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -39,6 +45,12 @@ export default function App() {
         <Route path="accessories" element={<AccessoriesPage />} />
         <Route path="bookorder" element={<BookOrderScreen />} />
         <Route path="cart" element={<CartPage />} />
+        <Route path="delivery" element={<DeliveryPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="bookdelivery" element={<BookDeliveryPage />} />
+        <Route path="addproduct" element={<AddProductPage />} />
+        <Route path="add/:type" element={<AddImagePage />} />
+        <Route path="search" element={<SearchPage />} />
         {/* <Route path="about" element={<About />} /> */}
       </Routes>
       <Footer />

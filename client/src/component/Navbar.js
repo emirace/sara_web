@@ -19,11 +19,15 @@ import { Store } from "../Store";
 
 const Container = styled.div`
   padding: 0 5vw;
+  background: ${color.background2};
+  @media (max-width: 500px) {
+    padding: 0 0;
+  }
 `;
 const Row = styled.div`
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
 `;
 
 const Row1 = styled.div`
@@ -78,7 +82,7 @@ const Switch = styled.input.attrs({
 })`
   position: relative;
   margin: 0 5px;
-  width: 40px;
+  width: 30px;
   height: 15px;
   -webkit-appearance: none;
   background: #fff;
@@ -91,7 +95,7 @@ const Switch = styled.input.attrs({
   &:checked {
     background: #fff;
     &:before {
-      left: 25px;
+      left: 15px;
       background: #000;
     }
   }
@@ -158,7 +162,7 @@ const Logo = styled.img`
 `;
 
 const LogoM = styled.img`
-  height: 100px;
+  height: 70px;
   display: none;
   @media (max-width: 500px) {
     display: block;
@@ -198,18 +202,26 @@ export default function Navbar() {
         </Center>
         <Right>
           <GiExitDoor />
-          <FaRegUser />
-          <HiSearch />
+          <Link to="/dashboard">
+            <FaRegUser />
+          </Link>
+          <Link to="/search">
+            <HiSearch />
+          </Link>
         </Right>
       </Row>
 
       <Row>
         <Left>
-          <MobileMenu />
-          <Logo src="/images/saralzwhite.png" alt="logo" />
+          <Link to="/">
+            <LogoM src="/images/saralzwhite.png" alt="logo" />
+          </Link>
+          <Link to="/">
+            <Logo src="/images/saralzwhite.png" alt="logo" />
+          </Link>
         </Left>
         <Center1>
-          <LogoM src="/images/saralzwhite.png" alt="logo" />
+          <MobileMenu />
           <Row1>
             <Li>
               <Link to="/">HOME</Link>

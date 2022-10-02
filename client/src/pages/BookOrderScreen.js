@@ -71,7 +71,7 @@ const Submit = styled.div`
 const Upload = styled.label`
   width: 150px;
   height: 150px;
-  border: 1px dashed red;
+  border: 1px dashed ${color.main};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -441,7 +441,9 @@ export default function BookOrderScreen() {
           )}
         </Col>
       </Content>
-      <Submit>Order</Submit>
+      <Link to="/bookdelivery">
+        <Submit>Order</Submit>
+      </Link>
 
       <OptionCont>
         <div>

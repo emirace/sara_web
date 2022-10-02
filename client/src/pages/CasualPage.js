@@ -62,7 +62,7 @@ export default function CasualPage() {
       </Category>
       <Content>
         {images.map((product) => (
-          <GallaryProduct key={product.key} src={product.src} />
+          <GallaryProduct key={product.key} product={product} />
         ))}
       </Content>
     </Container>

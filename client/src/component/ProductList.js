@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { products } from "../utils/data";
 import GallaryProduct from "./GallaryProduct";
-import Product from "./Product";
 
 const Container = styled.div`
   display: grid;

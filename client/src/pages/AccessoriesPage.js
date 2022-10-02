@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import GallaryProduct from "../component/GallaryProduct";
 import { color } from "../constant/parameters";
+import { products } from "../utils/data";
 
 const Container = styled.div`
   height: 100%;
@@ -61,8 +62,10 @@ export default function AccessoriesPage() {
         <Item>ACCESORIES</Item>
       </Category>
       <Content>
-        {images.map((product) => (
-          <GallaryProduct key={product.key} src={product.src} />
+        {products.map((product) => (
+          <>
+            <GallaryProduct key={product._id} product={product} />
+          </>
         ))}
       </Content>
     </Container>

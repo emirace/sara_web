@@ -85,6 +85,12 @@ const Request = styled.div`
     color: ${color.main};
   }
 `;
+const ModelImgCont = styled.div`
+  display: flex;
+  justify-content: center;
+  min-height: 100%;
+  align-items: center;
+`;
 const ModelImg = styled.img``;
 
 const images = [
@@ -129,7 +135,9 @@ export default function Catalogue() {
           </ImageCont>
         ))}
         <Model showModel={showModel} setShowModel={setShowModel}>
-          <ModelImg src={`/images/${zoomImg}`} alt="img" />
+          <ModelImgCont>
+            <ModelImg src={`/images/${zoomImg}`} alt="img" />
+          </ModelImgCont>
         </Model>
       </Content>
     </Container>

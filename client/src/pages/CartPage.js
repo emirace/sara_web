@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
@@ -25,6 +26,9 @@ const Item = styled.div`
   margin: 30px;
   display: flex;
   align-items: center;
+  @media (max-width: 500px) {
+    margin: 30px 0;
+  }
 `;
 const ImageCont = styled.div`
   flex: 1;
@@ -36,6 +40,7 @@ const Image = styled.img`
 `;
 const Details = styled.div`
   flex: 2;
+  margin-left: 10px;
 `;
 const Name = styled.div`
   font-weight: 500;
@@ -46,9 +51,16 @@ const Detail = styled.div``;
 const Price = styled.div`
   flex: 1;
   font-size: 18px;
+  @media (max-width: 500px) {
+    text-align: right;
+  }
 `;
 const Close = styled.div`
   flex: 1;
+  text-align: right;
+  @media (max-width: 500px) {
+    text-align: right;
+  }
   & svg {
     font-size: 20px;
   }
@@ -114,34 +126,52 @@ const CheckOutButton = styled.div`
     color: black;
   }
 `;
+
+const Empty = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+`;
 export default function CartPage() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart } = state;
-
+  const navigate = useNavigate();
   const removeItem = (product) => {
     ctxDispatch({ type: "REMOVE_CART_ITEM", payload: product });
+  };
+
+  const delivery = () => {
+    navigate("/delivery");
   };
   return (
     <Container>
       <h1>Shopping Cart</h1>
       <Content>
         <Left>
-          {console.log(cart)}
-          {cart.map((cartItem) => (
-            <Item key={cartItem._id}>
-              <ImageCont>
-                <Image src={`/images/${cartItem.src}`} alt="img" />
-              </ImageCont>
-              <Details>
-                <Name>{cartItem.name}</Name>
-                <Detail>desscription</Detail>
-              </Details>
-              <Price>${cartItem.price}</Price>
-              <Close onClick={() => removeItem(cartItem)}>
-                <AiOutlineClose />
-              </Close>
-            </Item>
-          ))}
+          {cart.length > 0 ? (
+            cart.map((cartItem) => (
+              <Item key={cartItem._id}>
+                <ImageCont>
+                  <Image src={`/images/${cartItem.src}`} alt="img" />
+                </ImageCont>
+                <Details>
+                  <Name>{cartItem.name}</Name>
+                  <Detail>desscription</Detail>
+                </Details>
+                <Price>${cartItem.price}</Price>
+                <Close onClick={() => removeItem(cartItem)}>
+                  <AiOutlineClose />
+                </Close>
+              </Item>
+            ))
+          ) : (
+            <Empty>
+              Cart is empty.{" "}
+              <span style={{ color: color.main }}> Continue shopping</span>
+            </Empty>
+          )}
         </Left>
         <Right>
           <SubHeading>Summary</SubHeading>
@@ -161,12 +191,12 @@ export default function CartPage() {
 
                 <SumItem>
                   <SumKey>Shipping</SumKey>
-                  <SumValue>$99</SumValue>
+                  <SumValue>$0</SumValue>
                 </SumItem>
 
                 <SumItem>
                   <SumKey>Tax</SumKey>
-                  <SumValue>$99</SumValue>
+                  <SumValue>$0</SumValue>
                 </SumItem>
               </SumCont>
               <Promo>
@@ -179,9 +209,9 @@ export default function CartPage() {
             <CheckOutCont>
               <TotalCont>
                 <Total>Total</Total>
-                <Value>$99</Value>
+                <Value>${cart.reduce((a, c) => a + c.price, 0)}</Value>
               </TotalCont>
-              <CheckOutButton>Checkout</CheckOutButton>
+              <CheckOutButton onClick={delivery}>Checkout</CheckOutButton>
             </CheckOutCont>
           </div>
         </Right>

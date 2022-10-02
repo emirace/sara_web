@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import GallaryProduct from "../component/GallaryProduct";
 import { color } from "../constant/parameters";
+import { products } from "../utils/data";
 
 const Container = styled.div`
   height: 100%;
@@ -61,8 +62,11 @@ export default function OwambePage() {
         <Item>ACCESORIES</Item>
       </Category>
       <Content>
-        {images.map((product) => (
-          <GallaryProduct key={product.key} src={product.src} />
+        {products.map((product) => (
+          <>
+            {console.log(product)}
+            <GallaryProduct key={product._id} product={product} />
+          </>
         ))}
       </Content>
     </Container>
