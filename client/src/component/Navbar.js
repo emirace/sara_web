@@ -171,7 +171,7 @@ const LogoM = styled.img`
 
 export default function Navbar() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { mode, cart } = state;
+  const { mode, cart, userInfo } = state;
 
   const darkMode = (mode1) => {
     if (mode1) {
@@ -181,6 +181,10 @@ export default function Navbar() {
       ctxDispatch({ type: "CHANGE_MODE", payload: "lightmode" });
       localStorage.setItem("mode", "lightmode");
     }
+  };
+  const signout = () => {
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
   };
   return (
     <Container>
@@ -201,10 +205,14 @@ export default function Navbar() {
           <BsWhatsapp color="#25D366" />
         </Center>
         <Right>
-          <GiExitDoor />
-          <Link to="/dashboard">
-            <FaRegUser />
-          </Link>
+          {userInfo && (
+            <>
+              <GiExitDoor onClick={signout} />
+              <Link to="/dashboard">
+                <FaRegUser />
+              </Link>
+            </>
+          )}
           <Link to="/search">
             <HiSearch />
           </Link>

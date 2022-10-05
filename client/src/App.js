@@ -21,6 +21,8 @@ import BookDeliveryPage from "./pages/BookDeliveryPage";
 import AddProductPage from "./pages/AddProductPage";
 import AddImagePage from "./pages/AddImagePage";
 import SearchPage from "./pages/SearchPage";
+import LoginPage from "./pages/LoginPage";
+import { AdminRoute } from "./utils/protected";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -46,11 +48,33 @@ export default function App() {
         <Route path="bookorder" element={<BookOrderScreen />} />
         <Route path="cart" element={<CartPage />} />
         <Route path="delivery" element={<DeliveryPage />} />
-        <Route path="dashboard" element={<DashboardPage />} />
+        <Route
+          path="dashboard"
+          element={
+            <AdminRoute>
+              <DashboardPage />
+            </AdminRoute>
+          }
+        />
         <Route path="bookdelivery" element={<BookDeliveryPage />} />
-        <Route path="addproduct" element={<AddProductPage />} />
-        <Route path="add/:type" element={<AddImagePage />} />
+        <Route
+          path="addproduct"
+          element={
+            <AdminRoute>
+              <AddProductPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="add/:type"
+          element={
+            <AdminRoute>
+              <AddImagePage />
+            </AdminRoute>
+          }
+        />
         <Route path="search" element={<SearchPage />} />
+        <Route path="loginadmin" element={<LoginPage />} />
         {/* <Route path="about" element={<About />} /> */}
       </Routes>
       <Footer />
