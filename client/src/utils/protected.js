@@ -7,3 +7,9 @@ export function AdminRoute({ children }) {
   const { userInfo } = state;
   return userInfo && userInfo.isAdmin ? children : <Navigate to="/" />;
 }
+
+export function CartRoute({ children }) {
+  const { state } = useContext(Store);
+  const { cart } = state;
+  return cart.length ? children : <Navigate to="/cart" />;
+}

@@ -7,6 +7,8 @@ const initialState = {
     : null,
   cart: [],
   mode: "darkmode",
+  style: null,
+  bookOrder: null,
 };
 
 function reducer(state, action) {
@@ -31,6 +33,14 @@ function reducer(state, action) {
 
     case "CHANGE_MODE":
       return { ...state, mode: action.payload };
+
+    case "ADD_STYLE":
+      return { ...state, style: action.payload };
+    case "BOOK_ORDER":
+      return { ...state, bookOrder: action.payload };
+
+    case "REMOVE_STYLE":
+      return { ...state, style: null };
 
     case "USER_SIGNIN":
       return { ...state, userInfo: action.payload };

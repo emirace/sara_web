@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Profile from "../component/dashboard/Profile";
-import { GrGallery } from "react-icons/gr";
-import { GrCatalog } from "react-icons/gr";
+import { BsImages } from "react-icons/bs";
 import { AiOutlineNotification } from "react-icons/ai";
 import { AiOutlineUser } from "react-icons/ai";
 import { AiFillShopping } from "react-icons/ai";
-import { BiSupport } from "react-icons/bi";
+import { BiBookOpen, BiSupport } from "react-icons/bi";
 import { color } from "../constant/parameters";
 import ProductList from "../component/dashboard/ProductList";
 import { AiOutlineShopping } from "react-icons/ai";
 import CatalogueList from "../component/dashboard/CatalogueList";
 import GalleryList from "../component/dashboard/GalleryList";
+import OrderList from "../component/dashboard/OrderList";
+import BookOrderList from "../component/dashboard/BookOrderList";
 
 const Container = styled.div`
   display: flex;
@@ -72,6 +73,10 @@ export default function DashboardPage() {
         return <CatalogueList setShowMobileMenu={setShowMobileMenu} />;
       case "gallerylist":
         return <GalleryList setShowMobileMenu={setShowMobileMenu} />;
+      case "orderlist":
+        return <OrderList setShowMobileMenu={setShowMobileMenu} />;
+      case "bookorderlist":
+        return <BookOrderList setShowMobileMenu={setShowMobileMenu} />;
 
       default:
         break;
@@ -98,10 +103,20 @@ export default function DashboardPage() {
         >
           <AiFillShopping /> Products
         </Option>
-        <Option>
+        <Option
+          onClick={() => {
+            setTab("bookorderlist");
+            setShowMobileMenu(false);
+          }}
+        >
           <AiOutlineShopping /> Booked Orders
         </Option>
-        <Option>
+        <Option
+          onClick={() => {
+            setTab("orderlist");
+            setShowMobileMenu(false);
+          }}
+        >
           <AiOutlineShopping /> Orders
         </Option>
         <Option
@@ -110,7 +125,7 @@ export default function DashboardPage() {
             setShowMobileMenu(false);
           }}
         >
-          <GrGallery color="plain" /> Galleries
+          <BsImages color="plain" /> Galleries
         </Option>
         <Option
           onClick={() => {
@@ -118,7 +133,7 @@ export default function DashboardPage() {
             setShowMobileMenu(false);
           }}
         >
-          <GrCatalog /> Catalogues
+          <BiBookOpen /> Catalogues
         </Option>
         <Title>Notification</Title>
         <Option>

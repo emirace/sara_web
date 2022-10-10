@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import Select from "react-select";
 import styled from "styled-components";
 import { color, colorStyles } from "../constant/parameters";
+import axios from "axios";
+import { Store } from "../Store";
+import LoadingBox from "../component/LoadingBox";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   padding: 5vw;
@@ -99,6 +103,36 @@ const Submit = styled.div`
   }
 `;
 
+const Checkbox = styled.input`
+  margin-bottom: 10px;
+  margin-right: 10px;
+  &::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: ${(props) =>
+      props.mode === "darkmode" ? "black" : "white"};
+    border: 1px solid ${color.main};
+  }
+  &:checked::after {
+    width: 15px;
+    height: 15px;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    position: relative;
+    top: -2px;
+    left: -1px;
+    background-color: ${color.main};
+    border: 1px solid ${color.main};
+  }
+`;
+
 const categories = [
   { value: "Owambe", label: "Owambe" },
   { value: "Casual", label: "Casual" },
@@ -108,7 +142,69 @@ const type = [
   { value: "Percent", label: "Percent" },
 ];
 export default function AddProductPage() {
+  const { state } = useContext(Store);
+  const { userInfo, mode } = state;
+
   const [image, setImage] = useState("");
+  const [images, setImages] = useState([]);
+  const [category, setCategory] = useState("");
+  const [name, setName] = useState("");
+  const [material, setMaterial] = useState("");
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [isNigeria, setIsNigeria] = useState(false);
+  const [countInStock, setCountInStock] = useState("");
+  const [description, setDescription] = useState("");
+  const [deliveryTime, setDeliveryTime] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [priceNigeria, setPriceNigeria] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      console.log("category", category);
+      await axios.post(
+        "/api/products",
+        {
+          image,
+          category,
+          name,
+          images,
+          material,
+          price,
+          discount,
+          currency,
+          isNigeria,
+          countInStock,
+          description,
+          deliveryTime,
+          priceNigeria,
+        },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      setLoading(false);
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const uploadImage = (file) => {
+    const data = "image.jpg";
+    console.log(file);
+    if (!image) {
+      setImage(data);
+    } else {
+      setImages((prev) => [...prev, data]);
+    }
+    console.log("image", image, "images", images);
+  };
+
   return (
     <Container>
       <Title>ADD PRODUCT</Title>
@@ -126,7 +222,7 @@ export default function AddProductPage() {
                 style={{ display: "none" }}
                 type="file"
                 id="uploadstyle"
-                onChange={(e) => setImage(e.target.files)}
+                onChange={(e) => uploadImage(e.target.files)}
               />
             </Content>
           </Section>
@@ -136,19 +232,29 @@ export default function AddProductPage() {
               <Row>
                 <Label>Select Category</Label>
                 <div style={{ width: "100%" }}>
-                  <Select options={categories} styles={colorStyles} />
+                  <Select
+                    options={categories}
+                    styles={colorStyles}
+                    onChange={(e) => setCategory(e.value)}
+                  />
                 </div>
               </Row>
               <Row>
                 <Label>Product Name</Label>
                 <div style={{ width: "100%" }}>
-                  <Input type="text" />
+                  <Input
+                    type="text"
+                    onChange={(e) => setName(e.target.value)}
+                  />
                 </div>
               </Row>
               <Row>
                 <Label>Material</Label>
                 <div style={{ width: "100%" }}>
-                  <Input type="text" />
+                  <Input
+                    type="text"
+                    onChange={(e) => setMaterial(e.target.value)}
+                  />
                 </div>
               </Row>
             </Content>
@@ -159,21 +265,58 @@ export default function AddProductPage() {
               <Row>
                 <Label>Price</Label>
                 <div style={{ width: "100%" }}>
-                  <Input type="number" />
+                  <Input
+                    type="number"
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
                 </div>
               </Row>
-
+              <Row>
+                <Label>Currency</Label>
+                <div style={{ width: "100%" }}>
+                  <Select
+                    options={categories}
+                    styles={colorStyles}
+                    onChange={(e) => setCurrency(e.value)}
+                  />
+                </div>
+              </Row>
+              <Row>
+                <Label>Product is Available in Nigeria</Label>
+                <Checkbox
+                  mode={mode}
+                  type="checkbox"
+                  onChange={(e) => setIsNigeria(e.target.checked)}
+                />
+              </Row>
+              {isNigeria && (
+                <Row>
+                  <Label>Price for Nigeria</Label>
+                  <div style={{ width: "100%" }}>
+                    <Input
+                      type="number"
+                      onChange={(e) => setPriceNigeria(e.target.value)}
+                    />
+                  </div>
+                </Row>
+              )}
               <Row>
                 <Label>Discount(%)</Label>
                 <div style={{ width: "100%" }}>
-                  <Input type="number" />
+                  <Input
+                    type="number"
+                    onChange={(e) => setDiscount(e.target.value)}
+                  />
                 </div>
               </Row>
 
               <Row>
-                <Label>QTY</Label>
+                <Label>Quantity in Stock</Label>
                 <div style={{ width: "100%" }}>
-                  <Input type="number" />
+                  <Input
+                    type="number"
+                    onChange={(e) => setCountInStock(e.target.value)}
+                  />
                 </div>
               </Row>
             </Content>
@@ -184,7 +327,9 @@ export default function AddProductPage() {
               <Row>
                 <Label>Description</Label>
                 <div style={{ width: "100%" }}>
-                  <Textarea></Textarea>
+                  <Textarea
+                    onChange={(e) => setDescription(e.target.value)}
+                  ></Textarea>
                 </div>
               </Row>
             </Content>
@@ -197,27 +342,20 @@ export default function AddProductPage() {
               <Row>
                 <Label>Days</Label>
                 <div style={{ width: "100%" }}>
-                  <Input type="number" />
+                  <Input
+                    type="number"
+                    onChange={(e) => setDeliveryTime(e.target.value)}
+                  />
                 </div>
               </Row>
-            </Content>
-          </Section>
-
-          <Section>
-            <SubHeading>TAX & VAT</SubHeading>
-            <Content>
-              <Row>
-                <Label>VAT</Label>
-                <div style={{ width: "100%" }}>
-                  <Input type="number" />
-                </div>
-              </Row>
-              <Select options={type} styles={colorStyles} />
             </Content>
           </Section>
         </Right>
       </Wrapper>
-      <Submit>Save</Submit>
+      <Submit onClick={handleSubmit}>
+        <LoadingBox as="span" animation="border" size="sm" aria-hidden="true" />{" "}
+        Save
+      </Submit>
     </Container>
   );
 }

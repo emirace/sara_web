@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoSearchOutline } from "react-icons/io5";
 import { color } from "../constant/parameters";
 import Model from "../component/Model";
+import { Store } from "../Store";
 
 const Container = styled.div`
   padding: 0 5vw;
@@ -109,10 +110,15 @@ const images = [
 ];
 
 export default function Catalogue() {
+  const { dispatch: ctxDispatch } = useContext(Store);
   const [showModel, setShowModel] = useState(false);
   const navigate = useNavigate();
   const bookoutfit = (image) => {
-    navigate(`/bookorder?style=${image}`);
+    ctxDispatch({
+      type: "ADD_STYLE",
+      payload: { ...image, styleType: "catalogue" },
+    });
+    navigate("/bookorder");
   };
   const [zoomImg, setZoomImg] = useState("");
   const handleZoom = (img) => {
@@ -130,7 +136,7 @@ export default function Catalogue() {
               <IconCont onClick={() => handleZoom(x.src)}>
                 <IoSearchOutline />
               </IconCont>
-              <Request onClick={() => bookoutfit(x.src)}>BOOK OUTFIT</Request>
+              <Request onClick={() => bookoutfit(x)}>BOOK OUTFIT</Request>
             </ButtonCont>
           </ImageCont>
         ))}

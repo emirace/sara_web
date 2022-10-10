@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { IoSearchOutline } from "react-icons/io5";
 import { color } from "../constant/parameters";
 import { useNavigate } from "react-router-dom";
 import Model from "./Model";
+import { Store } from "../Store";
 
 const Container = styled.div`
   position: relative;
@@ -86,10 +87,15 @@ const ModelImg = styled.img`
 `;
 
 export default function Product({ product }) {
+  const { dispatch: ctxDispatch } = useContext(Store);
   const [showModel, setShowModel] = useState(false);
   const navigate = useNavigate();
   const bookoutfit = (image) => {
-    navigate(`/bookorder?style=${image}`);
+    ctxDispatch({
+      type: "ADD_STYLE",
+      payload: { ...image, styleType: "gallery" },
+    });
+    navigate("/bookorder");
   };
   return (
     <Container>
@@ -98,7 +104,7 @@ export default function Product({ product }) {
         <IconCont onClick={() => setShowModel(true)}>
           <IoSearchOutline />
         </IconCont>
-        <Request onClick={() => bookoutfit(product.src)}>BOOK OUTFIT</Request>
+        <Request onClick={() => bookoutfit(product)}>BOOK OUTFIT</Request>
       </ButtonCont>
       <Model showModel={showModel} setShowModel={setShowModel}>
         <ModelImg src={`/images/${product.src}`} alt="img" />

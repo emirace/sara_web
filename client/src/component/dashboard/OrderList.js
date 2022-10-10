@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { IoSearchOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import styled from "styled-components";
 import { color } from "../../constant/parameters";
@@ -113,7 +113,7 @@ const unit = [
   { value: "Corporate", label: "Corporate" },
   { value: "Owambe", label: "Owambe" },
 ];
-export default function GalleryList({ setShowMobileMenu }) {
+export default function OrderList({ setShowMobileMenu }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
@@ -161,51 +161,34 @@ export default function GalleryList({ setShowMobileMenu }) {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [galleries, setGalleries] = useState([]);
+  const [orders, setOrders] = useState([]);
   useEffect(() => {
-    const getGalleries = async () => {
+    const getOrders = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get("/api/galleries/", {
+        const { data } = await axios.get("/api/orders/", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         console.log(data);
-        setGalleries(data.galleries);
+        setOrders(data.orders);
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     };
-    getGalleries();
+    getOrders();
   }, [userInfo]);
 
   return (
     <Container>
-      <h1>Gallery Lists</h1>
+      <h1>Order Lists</h1>
       <SearchCont>
         <Search>
           <IoSearchOutline color="black" />
           <Input type="text" />
         </Search>
       </SearchCont>
-      <Filter>
-        <FilterCont>
-          <Select options={unit} styles={colorStyles} />
-          <Select options={unit} styles={colorStyles} />
-          <Select options={unit} styles={colorStyles} />
-          <Select options={unit} styles={colorStyles} />
-        </FilterCont>
-        <Back
-          onClick={() => {
-            setShowMobileMenu(true);
-          }}
-        >
-          <BiChevronLeft />
-          Back
-        </Back>
-        <Button onClick={() => navigate("/add/gallery")}>Add Image</Button>
-      </Filter>
       {loading ? (
         <LoadingBox />
       ) : error ? (
@@ -214,15 +197,21 @@ export default function GalleryList({ setShowMobileMenu }) {
         <Content>
           <Trow>
             <Thead>ID</Thead>
-            <Thead>NAME</Thead>
+            <Thead>PRODUCT</Thead>
+            <Thead>PRICE</Thead>
+            <Thead>DATE</Thead>
             <Thead>ACTION</Thead>
           </Trow>
-          {galleries.map((gallery) => (
+          {orders.map((order) => (
             <Trow>
-              <Tdata>{gallery._id}</Tdata>
-              <Tdata>{gallery.name}</Tdata>
+              <Tdata>{order._id}</Tdata>
               <Tdata>
-                <View onClick={() => navigate(`/gallery/${gallery._id}`)}>
+                {order.cartItems.map((cartItem) => cartItem.name + ",")}
+              </Tdata>
+              <Tdata>{order.totalPrice}</Tdata>
+              <Tdata>{order.createdAt}</Tdata>
+              <Tdata>
+                <View onClick={() => navigate(`/order/${order._id}`)}>
                   View
                 </View>
               </Tdata>

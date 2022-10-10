@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import SelectBox from "../component/SelectBox";
 import Select from "react-select";
 import { AiOutlinePicture } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { color } from "../constant/parameters";
+import { Store } from "../Store";
 
 const Container = styled.div`
   padding: 30px 5vw;
@@ -59,7 +60,6 @@ const Submit = styled.div`
   padding: 10px 7px;
   width: 150px;
   text-align: center;
-  border-radius: 0.2rem;
   font-size: 15px;
   cursor: pointer;
   font-weight: bold;
@@ -131,6 +131,20 @@ const Row = styled.div`
   display: flex;
 `;
 
+const Remove = styled.div`
+  padding: 10px 7px;
+  border: 1px solid ${color.main};
+  margin: 15px;
+  cursor: pointer;
+  width: 150px;
+  text-align: center;
+  color: ${color.main};
+`;
+
+const Error = styled.div`
+  color: red;
+`;
+
 const countries = [
   { value: "Austria", label: "Austria" },
   { value: "Belgium", label: "Belgium" },
@@ -178,18 +192,34 @@ const gender = [
   { value: "Female", label: "Female" },
 ];
 export default function BookOrderScreen() {
-  const search = useLocation().search;
-  const style = new URLSearchParams(search).get("style");
+  // const search = useLocation().search;
+  // const content = new URLSearchParams(search);
+  // const style=content.get("style")
+  // con
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { style } = state;
   useEffect(() => {
     if (style) {
-      setImage(`/images/${style}`);
+      setImage(`/images/${style.src}`);
+      handleOnChange(style.styleType, "styleType");
+      handleOnChange(style.src, "style");
+      if (style.styleType === "gallery") {
+        handleOnChange(style._id, "galleryId");
+      } else {
+        handleOnChange(style._id, "catalogueId");
+      }
+    } else {
+      setImage(null);
     }
+    console.log(style);
   }, [style]);
 
   const [styleType, setStyleType] = useState(false);
   const [image, setImage] = useState("");
   const [selected, setSelected] = useState("");
   const [showMeasure, setShowMeasure] = useState(false);
+  const [input, setInput] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const colorStyles = {
     control: (styles, { isFocused }) => {
@@ -197,7 +227,7 @@ export default function BookOrderScreen() {
       return {
         ...styles,
         backgroundColor: "#000",
-        borderColor: isFocused ? "red" : color.border,
+        borderColor: isFocused ? color.main : color.border,
         boxShadow: "red",
         color: "white",
       };
@@ -232,9 +262,60 @@ export default function BookOrderScreen() {
       };
     },
   };
+
+  const handleOnChange = (text, input) => {
+    setInput((prevState) => ({ ...prevState, [input]: text }));
+  };
+  const handleError = (errorMessage, input) => {
+    setError((prevState) => ({ ...prevState, [input]: errorMessage }));
+  };
+
+  const handleUpload = () => {
+    // upload image
+    handleOnChange(style.src, "style");
+    setImage("image.png");
+  };
+
+  const handleBookOrder = () => {
+    if (!input.style) {
+      handleError("Please select a style", "style");
+      return;
+    }
+    if (!input.fabricChioce) {
+      handleError("Please select  fabric chioce", "fabricChioce");
+      return;
+    }
+
+    if (!input.userCountry) {
+      handleError("Please select  your Country", "userCountry");
+      return;
+    }
+
+    if (!input.unit) {
+      handleError("Please select  unit of measurement", "unit");
+      return;
+    }
+
+    if (!input.gender || !input.measurement) {
+      handleError("Please enter your measurements", "measurement");
+      return;
+    }
+
+    console.log(input);
+    console.log(error);
+
+    ctxDispatch({ type: "BOOK_ORDER", payload: input });
+    navigate("/bookdelivery");
+  };
+
+  const changeImage = () => {
+    console.log("remove");
+    ctxDispatch({ type: "REMOVE_STYLE" });
+  };
+
   return (
     <Container>
-      <h1>Book an Order</h1>
+      <h1>Book an Item</h1>
       <Content>
         <Col>
           {!image ? (
@@ -272,38 +353,56 @@ export default function BookOrderScreen() {
                   style={{ display: "none" }}
                   type="file"
                   id="uploadstyle"
-                  onChange={(e) =>
-                    setImage(URL.createObjectURL(e.target.files))
-                  }
+                  onChange={(e) => handleUpload(e.target.files)}
                 />
               </OptionCont>
             )
           ) : (
-            <ImageCont>
-              <Image src={image} alt="/img" />
-            </ImageCont>
+            <>
+              <ImageCont>
+                <Image src={image} alt="/img" />
+              </ImageCont>
+              <Remove onClick={changeImage}>Change</Remove>
+            </>
           )}
           {console.log(image)}
         </Col>
         <Col>
           <OptionCont>
             <Label>Select Country</Label>
-            <Select options={countries} styles={colorStyles} />
-          </OptionCont>
-          <OptionCont>
-            <Label>Delivery adrress</Label>
-            <Input type="text" />
+            <Select
+              onFocus={() => {
+                handleError(null, "userCountry");
+              }}
+              onChange={(e) => handleOnChange(e.value, "userCountry")}
+              options={countries}
+              styles={colorStyles}
+            />
+            {error.userCountry && <Error>{error.userCountry}</Error>}
           </OptionCont>
           <OptionCont>
             <Label>Fabric Chioce</Label>
-            <Select options={fabrics} styles={colorStyles} />
+            <Select
+              onFocus={() => handleError(null, "fabricChioce")}
+              onChange={(e) => handleOnChange(e.value, "fabricChioce")}
+              options={fabrics}
+              styles={colorStyles}
+            />
+            {error.fabricChioce && <Error>{error.fabricChioce}</Error>}
           </OptionCont>
           <OptionCont>
             <Label>Select measurement unit</Label>
-            <Select options={unit} styles={colorStyles} />
+            <Select
+              onFocus={() => handleError(null, "unit")}
+              onChange={(e) => handleOnChange(e.value, "unit")}
+              options={unit}
+              styles={colorStyles}
+            />
+            {error.unit && <Error>{error.unit}</Error>}
             <Chioce onClick={() => setShowMeasure(!showMeasure)}>
               Add measurement
             </Chioce>
+            {error.measurement && <Error>{error.measurement}</Error>}
           </OptionCont>
           {showMeasure && (
             <>
@@ -315,7 +414,11 @@ export default function BookOrderScreen() {
                     name="gender"
                     id="female"
                     value="female"
-                    onChange={(e) => setSelected(e.target.value)}
+                    onChange={(e) => {
+                      setSelected(e.target.value);
+                      handleOnChange(e.target.value, "gender");
+                    }}
+                    onFocus={() => handleError(null, "measurement")}
                   />
                   <label htmlFor="female">Female</label>
                   <input
@@ -323,34 +426,70 @@ export default function BookOrderScreen() {
                     name="gender"
                     id="male"
                     value="male"
-                    onChange={(e) => setSelected(e.target.value)}
+                    onFocus={() => handleError(null, "measurement")}
+                    onChange={(e) => {
+                      setSelected(e.target.value);
+                      handleOnChange(e.target.value, "gender");
+                    }}
                   />
                   <label htmlFor="male">Male</label>
                 </Radio>
-                {console.log(selected)}
               </OptionCont>
               {selected && (
                 <>
                   <OptionCont style={{ display: "flex", alignItems: "center" }}>
                     <Label style={{ marginRight: "20px" }}>Shoulders</Label>
-                    <Input type="number" />
+                    <Input
+                      type="number"
+                      onFocus={() => handleError(null, "measurement")}
+                      onChange={(e) =>
+                        handleOnChange(
+                          { ...input.measurement, shoulders: e.target.value },
+                          "measurement"
+                        )
+                      }
+                    />
                   </OptionCont>
                   <OptionCont style={{ display: "flex", alignItems: "center" }}>
                     <Label style={{ marginRight: "20px" }}>Chest</Label>
-                    <Input type="number" />
+                    <Input
+                      type="number"
+                      onChange={(e) =>
+                        handleOnChange(
+                          { ...input.measurement, chest: e.target.value },
+                          "measurement"
+                        )
+                      }
+                    />
                   </OptionCont>
                   <Row>
                     <OptionCont
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Tommy</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, tommy: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                     <OptionCont
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Waist</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, waist: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                   </Row>
                   {selected === "female" ? (
@@ -358,14 +497,30 @@ export default function BookOrderScreen() {
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Hips</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, hips: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                   ) : (
                     <OptionCont
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Tigh</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, tigh: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                   )}
                   {selected === "female" ? (
@@ -376,7 +531,18 @@ export default function BookOrderScreen() {
                         <Label style={{ marginRight: "20px" }}>
                           Half Length
                         </Label>
-                        <Input type="number" />
+                        <Input
+                          type="number"
+                          onChange={(e) =>
+                            handleOnChange(
+                              {
+                                ...input.measurement,
+                                halfLength: e.target.value,
+                              },
+                              "measurement"
+                            )
+                          }
+                        />
                       </OptionCont>
 
                       <OptionCont
@@ -385,7 +551,18 @@ export default function BookOrderScreen() {
                         <Label style={{ marginRight: "20px" }}>
                           Full Length
                         </Label>
-                        <Input type="number" />
+                        <Input
+                          type="number"
+                          onChange={(e) =>
+                            handleOnChange(
+                              {
+                                ...input.measurement,
+                                fullLength: e.target.value,
+                              },
+                              "measurement"
+                            )
+                          }
+                        />
                       </OptionCont>
                     </>
                   ) : (
@@ -396,7 +573,18 @@ export default function BookOrderScreen() {
                         <Label style={{ marginRight: "20px" }}>
                           Shirt Length
                         </Label>
-                        <Input type="number" />
+                        <Input
+                          type="number"
+                          onChange={(e) =>
+                            handleOnChange(
+                              {
+                                ...input.measurement,
+                                shirtLenth: e.target.value,
+                              },
+                              "measurement"
+                            )
+                          }
+                        />
                       </OptionCont>
 
                       <OptionCont
@@ -405,26 +593,64 @@ export default function BookOrderScreen() {
                         <Label style={{ marginRight: "20px" }}>
                           Trouser Length
                         </Label>
-                        <Input type="number" />
+                        <Input
+                          type="number"
+                          onChange={(e) =>
+                            handleOnChange(
+                              {
+                                ...input.measurement,
+                                trouserLength: e.target.value,
+                              },
+                              "measurement"
+                            )
+                          }
+                        />
                       </OptionCont>
                     </>
                   )}
                   <OptionCont style={{ display: "flex", alignItems: "center" }}>
                     <Label style={{ marginRight: "20px" }}>Sleeve Length</Label>
-                    <Input type="number" />
+                    <Input
+                      type="number"
+                      onChange={(e) =>
+                        handleOnChange(
+                          {
+                            ...input.measurement,
+                            SleeveLength: e.target.value,
+                          },
+                          "measurement"
+                        )
+                      }
+                    />
                   </OptionCont>
                   <Row>
                     <OptionCont
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Arm Bicep</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, armBicap: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                     <OptionCont
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Wrist</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, wrist: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                   </Row>
                   {selected === "male" && (
@@ -432,7 +658,15 @@ export default function BookOrderScreen() {
                       style={{ display: "flex", alignItems: "center" }}
                     >
                       <Label style={{ marginRight: "20px" }}>Neck</Label>
-                      <Input type="number" />
+                      <Input
+                        type="number"
+                        onChange={(e) =>
+                          handleOnChange(
+                            { ...input.measurement, neck: e.target.value },
+                            "measurement"
+                          )
+                        }
+                      />
                     </OptionCont>
                   )}
                 </>
@@ -441,9 +675,10 @@ export default function BookOrderScreen() {
           )}
         </Col>
       </Content>
-      <Link to="/bookdelivery">
-        <Submit>Order</Submit>
-      </Link>
+      {error.style && (
+        <Error style={{ marginLeft: "auto" }}>{error.style}</Error>
+      )}
+      <Submit onClick={handleBookOrder}>Order</Submit>
 
       <OptionCont>
         <div>

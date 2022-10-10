@@ -39,3 +39,9 @@ export const isAdmin = (req, res, next) => {
     res.status(401).send({ message: "Invalid Admin Token" });
   }
 };
+
+export const slugify = (Text) => {
+  return Text.toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+};

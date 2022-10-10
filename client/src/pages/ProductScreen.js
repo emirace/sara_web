@@ -1,9 +1,10 @@
+import axios from "axios";
 import React, { useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import LoadingBox from "../component/LoadingBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
-import { products } from "../utils/data";
 
 const Container = styled.div`
   padding: 0 5vw;
@@ -102,42 +103,40 @@ const reducer = (state, action) => {
 };
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { id } = useParams();
+  const { userInfo } = state;
+  const { slug } = useParams();
 
   const [{ product, loading }, dispatch] = useReducer(reducer, {
     product: {},
     loading: true,
   });
   useEffect(() => {
-    const getProduct = () => {
-      console.log(id);
+    const getProduct = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        products.map((p) => {
-          if (p._id.toString() === id) {
-            dispatch({ type: "FETCH_SUCCESS", payload: p });
-            console.log(p);
-          }
+        const { data } = await axios.get(`/api/products/${slug}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
         });
+        dispatch({ type: "FETCH_SUCCESS", payload: data.product });
       } catch (err) {
         console.log(err);
         dispatch({ type: "FETCH_FAIL" });
       }
     };
     getProduct();
-  }, [id]);
+  }, [slug, userInfo]);
 
   const addToCart = (product) => {
     ctxDispatch({ type: "ADD_TO_CART", payload: product });
   };
 
   return loading ? (
-    "Loading"
+    <LoadingBox />
   ) : (
     <Container>
       <Content>
         <Col>
-          <Image src={`/images/${product.src}`} alt="img" />
+          <Image src={`/images/${product.Image}`} alt="img" />
         </Col>
         <Col1>
           <Name>{product.name}</Name>
@@ -158,11 +157,7 @@ export default function ProductScreen() {
           </CheckOutButton>
           <div style={{ width: "70%" }}>
             <Description>Materials:</Description>
-            <p style={{ marginTop: "5px" }}>
-              eget. Mauris nibh augue, mattis vel condimentum in, tincidunt ac
-              velit. Morbi aliquet nisl in nisl posuere, eget euismod nulla
-              lobortis. Nunc
-            </p>
+            <p style={{ marginTop: "5px" }}>{product.material}</p>
             <Description>Deatails and fit:</Description>
             <ul style={{ marginTop: "5px" }}>
               <li>green col1Col1or</li>

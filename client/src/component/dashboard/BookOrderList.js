@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { IoSearchOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import styled from "styled-components";
 import { color } from "../../constant/parameters";
@@ -113,99 +113,41 @@ const unit = [
   { value: "Corporate", label: "Corporate" },
   { value: "Owambe", label: "Owambe" },
 ];
-export default function GalleryList({ setShowMobileMenu }) {
+export default function BookOrderList({ setShowMobileMenu }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const navigate = useNavigate();
-  const colorStyles = {
-    control: (styles, { isFocused }) => {
-      return {
-        ...styles,
-        backgroundColor: "#000",
-        width: "150px",
-        borderColor: isFocused ? color.main : color.border,
-        boxShadow: color.main,
-        color: "white",
-      };
-    },
-    menu: (styles, { isFocused }) => ({
-      ...styles,
-      backgroundColor: isFocused ? color.border : "black",
-      color: "white",
-    }),
-    option: (styles, { isDisabled, isFocused, isSelected }) => {
-      return {
-        ...styles,
-        backgroundColor: isDisabled
-          ? undefined
-          : isSelected
-          ? color.main
-          : isFocused
-          ? color.border
-          : "black",
-        color: isDisabled ? "#ccc" : isSelected ? "white" : "white",
-
-        cursor: isDisabled ? "not-allowed" : "default",
-
-        ":active": {
-          ...styles[":active"],
-          backgroundColor: !isDisabled
-            ? isSelected
-              ? color.main
-              : color.border
-            : undefined,
-        },
-      };
-    },
-  };
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [galleries, setGalleries] = useState([]);
+  const [bookorders, setBookOrders] = useState([]);
   useEffect(() => {
-    const getGalleries = async () => {
+    const getBookOrders = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get("/api/galleries/", {
+        const { data } = await axios.get("/api/bookorders/", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         console.log(data);
-        setGalleries(data.galleries);
+        setBookOrders(data.bookOrders);
         setLoading(false);
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     };
-    getGalleries();
+    getBookOrders();
   }, [userInfo]);
 
   return (
     <Container>
-      <h1>Gallery Lists</h1>
+      <h1>Order Lists</h1>
       <SearchCont>
         <Search>
           <IoSearchOutline color="black" />
           <Input type="text" />
         </Search>
       </SearchCont>
-      <Filter>
-        <FilterCont>
-          <Select options={unit} styles={colorStyles} />
-          <Select options={unit} styles={colorStyles} />
-          <Select options={unit} styles={colorStyles} />
-          <Select options={unit} styles={colorStyles} />
-        </FilterCont>
-        <Back
-          onClick={() => {
-            setShowMobileMenu(true);
-          }}
-        >
-          <BiChevronLeft />
-          Back
-        </Back>
-        <Button onClick={() => navigate("/add/gallery")}>Add Image</Button>
-      </Filter>
       {loading ? (
         <LoadingBox />
       ) : error ? (
@@ -214,15 +156,19 @@ export default function GalleryList({ setShowMobileMenu }) {
         <Content>
           <Trow>
             <Thead>ID</Thead>
-            <Thead>NAME</Thead>
+            <Thead>STYLE</Thead>
+            <Thead>PRICE</Thead>
+            <Thead>DATE</Thead>
             <Thead>ACTION</Thead>
           </Trow>
-          {galleries.map((gallery) => (
+          {bookorders.map((order) => (
             <Trow>
-              <Tdata>{gallery._id}</Tdata>
-              <Tdata>{gallery.name}</Tdata>
+              <Tdata>{order._id}</Tdata>
+              <Tdata></Tdata>
+              <Tdata>{order.price}</Tdata>
+              <Tdata>{order.createdAt}</Tdata>
               <Tdata>
-                <View onClick={() => navigate(`/gallery/${gallery._id}`)}>
+                <View onClick={() => navigate(`/bookorder/${order._id}`)}>
                   View
                 </View>
               </Tdata>

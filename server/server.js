@@ -5,6 +5,11 @@ import http from "http";
 import mongoose from "mongoose";
 import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import accountRouter from "./routes/accountRoutes.js";
+import bookOrderRouter from "./routes/bookOrderRoutes.js";
+import catalogueRouter from "./routes/catalogueRoutes.js";
+import galleryRouter from "./routes/galleryRoutes.js";
+import orderRouter from "./routes/orderRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +26,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use("/api/accounts", accountRouter);
+app.use("/api/bookorders", bookOrderRouter);
+app.use("/api/catalogues", catalogueRouter);
+app.use("/api/galleries", galleryRouter);
+app.use("/api/orders", orderRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
 

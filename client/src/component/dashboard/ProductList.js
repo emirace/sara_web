@@ -1,10 +1,13 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { BiChevronLeft } from "react-icons/bi";
 import { IoSearchOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import styled from "styled-components";
 import { color } from "../../constant/parameters";
+import { Store } from "../../Store";
+import LoadingBox from "../LoadingBox";
 
 const Container = styled.div``;
 const SearchCont = styled.div`
@@ -75,12 +78,44 @@ const Back = styled.div`
     display: flex;
   }
 `;
+
+const Content = styled.div`
+  background: ${color.border};
+  height: 100%;
+  margin: 20px 0;
+`;
+
+const Trow = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+`;
+const Thead = styled.div`
+  font-weight: bold;
+  flex: 1;
+  padding: 5px 20px;
+  background: black;
+`;
+const Tdata = styled.div`
+  flex: 1;
+  padding-left: 20px;
+`;
+
+const View = styled.div`
+  color: ${color.main};
+  cursor: pointer;
+  padding: 5px 7px;
+`;
+
 const unit = [
   { value: "Category", label: "Category" },
   { value: "Corporate", label: "Corporate" },
   { value: "Owambe", label: "Owambe" },
 ];
 export default function ProductList({ setShowMobileMenu }) {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const navigate = useNavigate();
   const colorStyles = {
     control: (styles, { isFocused }) => {
@@ -123,6 +158,28 @@ export default function ProductList({ setShowMobileMenu }) {
       };
     },
   };
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get("/api/products/", {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        console.log(data);
+        setProducts(data.products);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    getProducts();
+  }, [userInfo]);
+
   return (
     <Container>
       <h1>Product Lists</h1>
@@ -149,6 +206,37 @@ export default function ProductList({ setShowMobileMenu }) {
         </Back>
         <Button onClick={() => navigate("/addproduct")}>Add Product</Button>
       </Filter>
+      {loading ? (
+        <LoadingBox />
+      ) : error ? (
+        <div>{error}</div>
+      ) : (
+        <Content>
+          <Trow>
+            <Thead>ID</Thead>
+            <Thead>NAME</Thead>
+            <Thead>CATEGORY</Thead>
+            <Thead>PRICE</Thead>
+            <Thead>ACTION</Thead>
+          </Trow>
+          {products.map((product) => (
+            <Trow>
+              <Tdata>{product._id}</Tdata>
+              <Tdata>{product.name}</Tdata>
+              <Tdata>{product.category}</Tdata>
+              <Tdata>
+                {product.currency}
+                {product.price}
+              </Tdata>
+              <Tdata>
+                <View onClick={() => navigate(`/product/${product.slug}`)}>
+                  View
+                </View>
+              </Tdata>
+            </Trow>
+          ))}
+        </Content>
+      )}
     </Container>
   );
 }
