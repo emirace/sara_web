@@ -10,6 +10,7 @@ import bookOrderRouter from "./routes/bookOrderRoutes.js";
 import catalogueRouter from "./routes/catalogueRoutes.js";
 import galleryRouter from "./routes/galleryRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+import uploadRouter from "./routes/uploadloadRoutes.js";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use("/api/galleries", galleryRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
+app.use("/api/uploads", uploadRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "../client/build")));

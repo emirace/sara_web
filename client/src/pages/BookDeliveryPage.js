@@ -182,9 +182,18 @@ export default function BookDeliveryPage() {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
 
-  const handleUpload = (e) => {
-    //upload image here
-    handleOnChange("image.png", "proof");
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      const { data } = await axios.post("/api/uploads", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      handleOnChange(data.secure_url, "proof");
+    } catch (err) {}
   };
 
   const handlebuyer = () => {
@@ -266,7 +275,7 @@ export default function BookDeliveryPage() {
         proof: input.proof,
       });
       console.log(data);
-      if (data.successs) {
+      if (data.success) {
         navigate(`ordercreated/${data.order._id}`);
       }
     } catch (err) {
@@ -429,6 +438,9 @@ export default function BookDeliveryPage() {
                 <Label>
                   Upload the screenshort of Receipt/teller to comfirm payment
                 </Label>
+                {input.proof && (
+                  <img src={input.proof} alt="img" style={{ width: "100px" }} />
+                )}
                 <ImageLabel htmlFor="receipt">
                   <AiOutlinePicture /> Add Receipt
                 </ImageLabel>

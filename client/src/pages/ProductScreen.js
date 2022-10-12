@@ -56,6 +56,11 @@ const SizeKey = styled.div`
 `;
 const SizeValue = styled.div`
   margin: 0 20px;
+  border: 1px solid;
+  padding: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   font-weight: bold;
   &:hover {
     color: ${color.main};
@@ -87,6 +92,14 @@ const Price = styled.div`
 const Description = styled.div`
   font-weight: 500;
   font-size: 18px;
+`;
+
+const Discount = styled.div`
+  font-size: 25px;
+  color: grey;
+  text-decoration: line-through;
+  margin: 0 30px;
+  margin-bottom: 20px;
 `;
 
 const reducer = (state, action) => {
@@ -136,16 +149,28 @@ export default function ProductScreen() {
     <Container>
       <Content>
         <Col>
-          <Image src={`/images/${product.Image}`} alt="img" />
+          <Image src={`${product.image}`} alt="img" />
         </Col>
         <Col1>
           <Name>{product.name}</Name>
-          <Price>${product.price}</Price>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Price>
+              {product.currency}
+              {(Number(100 - product.discount) / 100) * Number(product.price)}
+            </Price>
+            {product.discount && <Discount>{product.price}</Discount>}
+            {product.discount && (
+              <div style={{ marginBottom: "20px" }}>({product.discount}%)</div>
+            )}
+          </div>
 
-          <Description>Description</Description>
-          <p>{product.description}</p>
+          <Description>Materials:</Description>
+          <p style={{ marginTop: "5px" }}>{product.material}</p>
+          <Description>Category:</Description>
+          <p style={{ marginTop: "5px" }}>{product.category}</p>
           <Icons></Icons>
           <SizeCont>
+            <div>Select Size:</div>
             <SizeValue>XM</SizeValue>
             <SizeValue>S</SizeValue>
             <SizeValue>M</SizeValue>
@@ -155,9 +180,9 @@ export default function ProductScreen() {
           <CheckOutButton onClick={() => addToCart(product)}>
             ADD TO CART
           </CheckOutButton>
+          <Description>Description</Description>
+          <p>{product.description}</p>
           <div style={{ width: "70%" }}>
-            <Description>Materials:</Description>
-            <p style={{ marginTop: "5px" }}>{product.material}</p>
             <Description>Deatails and fit:</Description>
             <ul style={{ marginTop: "5px" }}>
               <li>green col1Col1or</li>

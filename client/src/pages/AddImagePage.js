@@ -87,16 +87,25 @@ export default function AddImagePage() {
   const [description, setDescription] = useState("");
 
   const navigate = useNavigate();
-
-  const uploadImage = (file) => {
-    const data = "image.jpg";
-    console.log(file);
-    if (!image) {
-      setImage(data);
-    } else {
-      setImages((prev) => [...prev, data]);
-    }
-    console.log("image", image, "images", images);
+  const [loadingImage, setLoadingImage] = useState(false);
+  const uploadImage = async (e) => {
+    setLoadingImage(true);
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      const { data } = await axios.post("/api/uploads", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      if (!image) {
+        setImage(data.secure_url);
+      } else {
+        setImages((prev) => [...prev, data.secure_url]);
+      }
+    } catch (err) {}
   };
 
   const submit = async () => {
@@ -139,7 +148,7 @@ export default function AddImagePage() {
           style={{ display: "none" }}
           type="file"
           id="uploadstyle"
-          onChange={(e) => uploadImage(e.target.files)}
+          onChange={(e) => uploadImage(e)}
         />
         <Row>
           <Label>Product Name</Label>

@@ -2,6 +2,7 @@ import React from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import styled from "styled-components";
+import { useParams, useNavigate } from "react-router-dom";
 import { color } from "../constant/parameters";
 
 const Container = styled.div`
@@ -52,6 +53,12 @@ const Text = styled.div`
   font-weight: bold;
 `;
 export default function OrderSuccessPage() {
+  const { id: orderId } = useParams();
+  const navigate = useNavigate();
+
+  const handle = () => {
+    navigate(`/order/${orderId}`);
+  };
   return (
     <Container>
       <Content>
@@ -63,7 +70,7 @@ export default function OrderSuccessPage() {
           <Text>Order Created Successfully</Text>
         </Top>
         <Buttom>
-          <Button>View Order Details</Button>
+          <Button onClick={handle}>View Order Details</Button>
         </Buttom>
       </Content>
     </Container>

@@ -6,6 +6,8 @@ import { AiOutlinePicture } from "react-icons/ai";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
+import axios from "axios";
+import LoadingBox from "../component/LoadingBox";
 
 const Container = styled.div`
   padding: 30px 5vw;
@@ -200,7 +202,7 @@ export default function BookOrderScreen() {
   const { style } = state;
   useEffect(() => {
     if (style) {
-      setImage(`/images/${style.src}`);
+      setImage([`/images/${style.src}`]);
       handleOnChange(style.styleType, "styleType");
       handleOnChange(style.src, "style");
       if (style.styleType === "gallery") {
@@ -215,7 +217,7 @@ export default function BookOrderScreen() {
   }, [style]);
 
   const [styleType, setStyleType] = useState(false);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState([]);
   const [selected, setSelected] = useState("");
   const [showMeasure, setShowMeasure] = useState(false);
   const [input, setInput] = useState("");
@@ -269,11 +271,27 @@ export default function BookOrderScreen() {
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
-
-  const handleUpload = () => {
-    // upload image
-    handleOnChange(style.src, "style");
-    setImage("image.png");
+  const [loading, setLoading] = useState(false);
+  const [errorImage, setErrorImage] = useState("");
+  const handleUpload = async (e) => {
+    setLoading(true);
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      const { data } = await axios.post("/api/uploads", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(image);
+      handleOnChange(data.secure_url, "style");
+      setImage([data.secure_url]);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      setErrorImage("encounter a problem uploading image");
+    }
   };
 
   const handleBookOrder = () => {
@@ -311,10 +329,13 @@ export default function BookOrderScreen() {
   const changeImage = () => {
     console.log("remove");
     ctxDispatch({ type: "REMOVE_STYLE" });
+    setStyleType(false);
+    setImage(null);
   };
 
   return (
     <Container>
+      {console.log(image, style)}
       <h1>Book an Item</h1>
       <Content>
         <Col>
@@ -345,22 +366,29 @@ export default function BookOrderScreen() {
               </OptionCont>
             ) : (
               <OptionCont>
-                <Upload htmlFor="uploadstyle">
-                  <AiOutlinePicture />
-                  <div>Add photo</div>
-                </Upload>
+                {loading ? (
+                  <LoadingBox />
+                ) : (
+                  <Upload htmlFor="uploadstyle">
+                    <AiOutlinePicture />
+                    <div>Add photo</div>
+                  </Upload>
+                )}
+                {errorImage && <div>{errorImage}</div>}
                 <input
                   style={{ display: "none" }}
                   type="file"
                   id="uploadstyle"
-                  onChange={(e) => handleUpload(e.target.files)}
+                  onChange={(e) => handleUpload(e)}
                 />
               </OptionCont>
             )
           ) : (
             <>
               <ImageCont>
-                <Image src={image} alt="/img" />
+                {image.map((img) => (
+                  <Image key={img} src={img} alt="/img" />
+                ))}
               </ImageCont>
               <Remove onClick={changeImage}>Change</Remove>
             </>

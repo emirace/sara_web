@@ -47,7 +47,12 @@ const Upload = styled.label`
     font-size: 60px;
   }
 `;
-const Image = styled.img``;
+const Image = styled.img`
+  width: 150px;
+  height: 259px;
+  margin: 15px;
+  object-fit: cover;
+`;
 const Row = styled.div`
   display: flex;
   align-items: center;
@@ -137,6 +142,11 @@ const categories = [
   { value: "Owambe", label: "Owambe" },
   { value: "Casual", label: "Casual" },
 ];
+
+const currency1 = [
+  { value: "EUR", label: "EUR" },
+  { value: "USD", label: "USD" },
+];
 const type = [
   { value: "Flat", label: "Flat" },
   { value: "Percent", label: "Percent" },
@@ -193,16 +203,26 @@ export default function AddProductPage() {
       console.log(err);
     }
   };
-
-  const uploadImage = (file) => {
-    const data = "image.jpg";
-    console.log(file);
-    if (!image) {
-      setImage(data);
-    } else {
-      setImages((prev) => [...prev, data]);
-    }
-    console.log("image", image, "images", images);
+  const [loadingImage, setLoadingImage] = useState(false);
+  const uploadImage = async (e) => {
+    setLoadingImage(true);
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append("file", file);
+    try {
+      const { data } = await axios.post("/api/uploads", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      if (!image) {
+        setImage(data.secure_url);
+      } else {
+        setImages((prev) => [...prev, data.secure_url]);
+      }
+      setLoadingImage(false);
+    } catch (err) {}
   };
 
   return (
@@ -213,16 +233,24 @@ export default function AddProductPage() {
           <Section>
             <SubHeading>Add Image</SubHeading>
             <Content>
-              <Image src={image} alt="" />
-              <Upload htmlFor="uploadstyle">
-                <AiOutlinePicture />
-                <div>Add photo</div>
-              </Upload>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {[image, ...images].map(
+                  (img) => img && <Image src={img} alt="" />
+                )}
+                {loadingImage ? (
+                  <LoadingBox />
+                ) : (
+                  <Upload htmlFor="uploadstyle">
+                    <AiOutlinePicture />
+                    <div>Add photo</div>
+                  </Upload>
+                )}
+              </div>
               <input
                 style={{ display: "none" }}
                 type="file"
                 id="uploadstyle"
-                onChange={(e) => uploadImage(e.target.files)}
+                onChange={(e) => uploadImage(e)}
               />
             </Content>
           </Section>
@@ -275,7 +303,7 @@ export default function AddProductPage() {
                 <Label>Currency</Label>
                 <div style={{ width: "100%" }}>
                   <Select
-                    options={categories}
+                    options={currency1}
                     styles={colorStyles}
                     onChange={(e) => setCurrency(e.value)}
                   />
