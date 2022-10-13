@@ -45,7 +45,7 @@ export default function HomePage() {
 
         <ProductList />
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Link to="/gallery">
+          <Link to="/allproduct">
             <Button>VIEW ALL</Button>
           </Link>
         </div>

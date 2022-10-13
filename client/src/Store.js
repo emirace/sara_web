@@ -31,6 +31,8 @@ function reducer(state, action) {
       return { ...state, cart: cartItems };
     }
 
+    case "CLEAR_CART":
+      return { ...state, cart: [] };
     case "CHANGE_MODE":
       return { ...state, mode: action.payload };
 

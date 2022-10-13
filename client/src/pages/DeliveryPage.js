@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import LoadingBox from "../component/LoadingBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 
@@ -161,6 +162,7 @@ export default function DeliveryPage() {
   const { cart } = state;
   const [tab, setTab] = useState("info");
   const [loading, setLoading] = useState(false);
+  const [loadingImage, setLoadingImage] = useState(false);
   const [input, setInput] = useState({
     email: "",
     lastName: "",
@@ -182,6 +184,7 @@ export default function DeliveryPage() {
   };
 
   const handleUpload = async (e) => {
+    setLoadingImage(true);
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
@@ -192,7 +195,11 @@ export default function DeliveryPage() {
         },
       });
       handleOnChange(data.secure_url, "proof");
-    } catch (err) {}
+      setLoadingImage(false);
+    } catch (err) {
+      setLoadingImage(false);
+      handleError("Error uploading image, try again", "proof");
+    }
   };
 
   const handlebuyer = () => {
@@ -294,10 +301,13 @@ export default function DeliveryPage() {
         proof: input.proof,
       });
       console.log(data);
-      if (data.successs) {
-        navigate(`ordercreated/${data.order._id}`);
+      if (data.success) {
+        ctxDispatch({ type: "CLEAR_CART" });
+        navigate(`/ordercreated/${data.order._id}`);
       }
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };
@@ -460,6 +470,7 @@ export default function DeliveryPage() {
                 {input.proof && (
                   <img src={input.proof} alt="img" style={{ width: "100px" }} />
                 )}
+                {loadingImage ? <LoadingBox /> : ""}
                 <ImageLabel htmlFor="receipt">
                   <AiOutlinePicture /> Add Receipt
                 </ImageLabel>
@@ -468,14 +479,20 @@ export default function DeliveryPage() {
                 <input
                   type="file"
                   id="receipt"
-                  onFocus={() => handleError(null, "deliveryPhone")}
+                  on={() => handleError(null, "proof")}
                   style={{ display: "none" }}
-                  onChange={(e) => handleUpload(e)}
+                  onChange={(e) => {
+                    handleUpload(e);
+                    handleError(null, "proof");
+                  }}
                 />
+                {console.log(input)}
               </OptionCont>
 
               <ButtonCont>
                 <CheckOutButton onClick={handleOrder}>Order</CheckOutButton>
+                {loading ? <LoadingBox /> : ""}
+
                 <Back onClick={() => setTab("delivery")}>Back</Back>
               </ButtonCont>
             </Form>

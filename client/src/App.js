@@ -26,6 +26,7 @@ import { AdminRoute, CartRoute } from "./utils/protected";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import BookOrderDetailPage from "./pages/BookOrderDetailPage";
+import AllProductPage from "./pages/AllProductPage";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="ordercreated/:id" element={<OrderSuccessPage />} />
         <Route path="order/:id" element={<OrderDetailPage />} />
         <Route path="bookorder/:id" element={<BookOrderDetailPage />} />
+        <Route path="allproduct" element={<AllProductPage />} />
         <Route
           path="delivery"
           element={

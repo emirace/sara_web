@@ -154,7 +154,7 @@ export default function CartPage() {
             cart.map((cartItem) => (
               <Item key={cartItem._id}>
                 <ImageCont>
-                  <Image src={`/images/${cartItem.src}`} alt="img" />
+                  <Image src={`${cartItem.image}`} alt="img" />
                 </ImageCont>
                 <Details>
                   <Name>{cartItem.name}</Name>

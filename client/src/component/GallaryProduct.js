@@ -75,16 +75,16 @@ const Name = styled.div`
   margin-top: -3px;
 `;
 export default function GallaryProduct({ product }) {
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { dispatch: ctxDispatch } = useContext(Store);
   const addToCart = (product) => {
     ctxDispatch({ type: "ADD_TO_CART", payload: product });
   };
   return (
     <Product>
       {console.log(product)}
-      <Image src={`/images/${product.src}`} alt="img" />
+      <Image src={`${product.image}`} alt="img" />
       <Name className="name">{product.name}</Name>
-      <Link to={`/product/${product._id}`}>
+      <Link to={`/product/${product.slug}`}>
         <Blur className="icons" />
       </Link>
       <IconCont>

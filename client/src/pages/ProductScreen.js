@@ -58,10 +58,13 @@ const SizeValue = styled.div`
   margin: 0 20px;
   border: 1px solid;
   padding: 8px;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   &:hover {
     color: ${color.main};
   }
@@ -109,7 +112,7 @@ const reducer = (state, action) => {
     case "FETCH_SUCCESS":
       return { ...state, loading: false, product: action.payload };
     case "FETCH_FAIL":
-      return { ...state, loading: false };
+      return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
@@ -119,9 +122,10 @@ export default function ProductScreen() {
   const { userInfo } = state;
   const { slug } = useParams();
 
-  const [{ product, loading }, dispatch] = useReducer(reducer, {
+  const [{ product, loading, error }, dispatch] = useReducer(reducer, {
     product: {},
     loading: true,
+    error: "",
   });
   useEffect(() => {
     const getProduct = async () => {
@@ -130,10 +134,14 @@ export default function ProductScreen() {
         const { data } = await axios.get(`/api/products/${slug}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        dispatch({ type: "FETCH_SUCCESS", payload: data.product });
+        if (data.success) {
+          dispatch({ type: "FETCH_SUCCESS", payload: data.product });
+        } else {
+          dispatch({ type: "FETCH_FAIL", payload: data.message });
+        }
       } catch (err) {
         console.log(err);
-        dispatch({ type: "FETCH_FAIL" });
+        dispatch({ type: "FETCH_FAIL", payload: err.message });
       }
     };
     getProduct();
@@ -145,6 +153,8 @@ export default function ProductScreen() {
 
   return loading ? (
     <LoadingBox />
+  ) : error ? (
+    <div>{error}</div>
   ) : (
     <Container>
       <Content>
@@ -164,10 +174,8 @@ export default function ProductScreen() {
             )}
           </div>
 
-          <Description>Materials:</Description>
-          <p style={{ marginTop: "5px" }}>{product.material}</p>
-          <Description>Category:</Description>
-          <p style={{ marginTop: "5px" }}>{product.category}</p>
+          <Description>Description</Description>
+          <p>{product.description}</p>
           <Icons></Icons>
           <SizeCont>
             <div>Select Size:</div>
@@ -180,8 +188,11 @@ export default function ProductScreen() {
           <CheckOutButton onClick={() => addToCart(product)}>
             ADD TO CART
           </CheckOutButton>
-          <Description>Description</Description>
-          <p>{product.description}</p>
+
+          <Description>Materials:</Description>
+          <p style={{ marginTop: "5px" }}>{product.material}</p>
+          <Description>Category:</Description>
+          <p style={{ marginTop: "5px" }}>{product.category}</p>
           <div style={{ width: "70%" }}>
             <Description>Deatails and fit:</Description>
             <ul style={{ marginTop: "5px" }}>
