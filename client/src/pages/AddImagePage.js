@@ -34,7 +34,12 @@ const Upload = styled.label`
     font-size: 60px;
   }
 `;
-const Image = styled.img``;
+const Image = styled.img`
+  margin-right: 10px;
+  width: 250px;
+  height: 500px;
+  object-fit: cover;
+`;
 
 const Submit = styled.div`
   margin: 15px;
@@ -74,6 +79,13 @@ const Row = styled.div`
   margin: 10px 0;
 `;
 
+const ImageRow = styled.div`
+  display: flex;
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+`;
+
 export default function AddImagePage() {
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -105,7 +117,10 @@ export default function AddImagePage() {
       } else {
         setImages((prev) => [...prev, data.secure_url]);
       }
-    } catch (err) {}
+      setLoadingImage(false);
+    } catch (err) {
+      setLoadingImage(false);
+    }
   };
 
   const submit = async () => {
@@ -126,7 +141,7 @@ export default function AddImagePage() {
       );
       console.log(data);
       setLoading(false);
-      navigate("/gallery");
+      navigate(`/${type}`);
     } catch (err) {
       setLoading(false);
       setError(err.message);
@@ -139,17 +154,27 @@ export default function AddImagePage() {
         Add Image to <span style={{ textTransform: "capitalize" }}>{type}</span>
       </Title>
       <Section>
-        <Image src={image} alt="" />
-        <Upload htmlFor="uploadstyle">
-          <AiOutlinePicture />
-          <div>Add photo</div>
-        </Upload>
-        <input
-          style={{ display: "none" }}
-          type="file"
-          id="uploadstyle"
-          onChange={(e) => uploadImage(e)}
-        />
+        <ImageRow style={{ display: "flex" }}>
+          {[image, ...images].map((img) => {
+            if (img) {
+              return <Image src={img} alt="img" />;
+            }
+          })}
+          {loadingImage ? (
+            <LoadingBox />
+          ) : (
+            <Upload htmlFor="uploadstyle">
+              <AiOutlinePicture />
+              <div>Add photo</div>
+            </Upload>
+          )}
+          <input
+            style={{ display: "none" }}
+            type="file"
+            id="uploadstyle"
+            onChange={(e) => uploadImage(e)}
+          />
+        </ImageRow>
         <Row>
           <Label>Product Name</Label>
           <div style={{ width: "100%" }}>

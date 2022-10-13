@@ -202,9 +202,9 @@ export default function BookOrderScreen() {
   const { style } = state;
   useEffect(() => {
     if (style) {
-      setImage([`/images/${style.src}`]);
+      setImage([`${style.image}`]);
       handleOnChange(style.styleType, "styleType");
-      handleOnChange(style.src, "style");
+      handleOnChange(style.image, "style");
       if (style.styleType === "gallery") {
         handleOnChange(style._id, "galleryId");
       } else {

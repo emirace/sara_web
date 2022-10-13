@@ -99,7 +99,7 @@ export default function Product({ product }) {
   };
   return (
     <Container>
-      <Image src={`/images/${product.src}`} alt="img" />
+      <Image src={product.image} alt="img" />
       <ButtonCont>
         <IconCont onClick={() => setShowModel(true)}>
           <IoSearchOutline />
@@ -107,7 +107,7 @@ export default function Product({ product }) {
         <Request onClick={() => bookoutfit(product)}>BOOK OUTFIT</Request>
       </ButtonCont>
       <Model showModel={showModel} setShowModel={setShowModel}>
-        <ModelImg src={`/images/${product.src}`} alt="img" />
+        <ModelImg src={product.image} alt="img" />
       </Model>
     </Container>
   );

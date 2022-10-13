@@ -1,10 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { IoSearchOutline } from "react-icons/io5";
 import { color } from "../constant/parameters";
 import Model from "../component/Model";
 import { Store } from "../Store";
+import axios from "axios";
+import LoadingBox from "../component/LoadingBox";
 
 const Container = styled.div`
   padding: 0 5vw;
@@ -113,6 +115,24 @@ export default function Catalogue() {
   const { dispatch: ctxDispatch } = useContext(Store);
   const [showModel, setShowModel] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [catalogues, setCatalogues] = useState(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const getCatalogues = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get("/api/catalogues/");
+        console.log(data);
+        setCatalogues(data.catalogues);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    getCatalogues();
+  }, []);
   const bookoutfit = (image) => {
     ctxDispatch({
       type: "ADD_STYLE",
@@ -129,20 +149,26 @@ export default function Catalogue() {
     <Container>
       <H1>CATALOGUE</H1>
       <Content>
-        {images.map((x) => (
-          <ImageCont key={x.key}>
-            <Image src={`/images/${x.src}`} alt="img" />
-            <ButtonCont>
-              <IconCont onClick={() => handleZoom(x.src)}>
-                <IoSearchOutline />
-              </IconCont>
-              <Request onClick={() => bookoutfit(x)}>BOOK OUTFIT</Request>
-            </ButtonCont>
-          </ImageCont>
-        ))}
+        {loading ? (
+          <LoadingBox />
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          catalogues.map((x) => (
+            <ImageCont key={x.key}>
+              <Image src={x.image} alt="img" />
+              <ButtonCont>
+                <IconCont onClick={() => handleZoom(x.image)}>
+                  <IoSearchOutline />
+                </IconCont>
+                <Request onClick={() => bookoutfit(x)}>BOOK OUTFIT</Request>
+              </ButtonCont>
+            </ImageCont>
+          ))
+        )}
         <Model showModel={showModel} setShowModel={setShowModel}>
           <ModelImgCont>
-            <ModelImg src={`/images/${zoomImg}`} alt="img" />
+            <ModelImg src={zoomImg} alt="img" />
           </ModelImgCont>
         </Model>
       </Content>

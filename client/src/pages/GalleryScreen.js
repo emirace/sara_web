@@ -1,9 +1,9 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import GallaryProduct from "../component/GallaryProduct";
+import LoadingBox from "../component/LoadingBox";
 import Product from "../component/Product";
 import { color } from "../constant/parameters";
-import { products } from "../utils/data";
 
 const Container = styled.div`
   height: 100%;
@@ -41,6 +41,24 @@ const Content = styled.div`
 `;
 
 export default function GalleryScreen() {
+  const [loading, setLoading] = useState(true);
+  const [galleries, setGalleries] = useState(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const getGalleries = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get("/api/galleries/");
+        console.log(data);
+        setGalleries(data.galleries);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    getGalleries();
+  }, []);
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}>GALLARY</h1>
@@ -52,9 +70,15 @@ export default function GalleryScreen() {
         <Item>GIRLS</Item>
       </Category>
       <Content>
-        {products.map((product) => (
-          <Product key={product._id} product={product} />
-        ))}
+        {loading ? (
+          <LoadingBox />
+        ) : error ? (
+          <div>{error}</div>
+        ) : (
+          galleries.map((product) => (
+            <Product key={product._id} product={product} />
+          ))
+        )}
       </Content>
     </Container>
   );

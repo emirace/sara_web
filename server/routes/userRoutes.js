@@ -2,7 +2,7 @@ import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import { body, validationResult } from "express-validator";
 import User from "../models/userModel.js";
-import { generateToken } from "../utils.js";
+import { generateToken, isAdmin, isAuth } from "../utils.js";
 
 const userRouter = express.Router();
 
@@ -72,6 +72,58 @@ userRouter.post(
       success: true,
       message: "Account Create successful",
     });
+  })
+);
+
+userRouter.get(
+  "/account",
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ isAdmin: true });
+    if (user) {
+      res.send({
+        account: {
+          accountName: user.accountName,
+          bankName: user.bankName,
+          accountNumber: user.accountNumber,
+        },
+        success: true,
+        message: "Success",
+      });
+    } else {
+      res.send({
+        success: false,
+        message: "Invalid Email or Password",
+      });
+    }
+  })
+);
+userRouter.put(
+  "/updateaccount",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ isAdmin: true });
+    if (user) {
+      user.accountName = req.body.accountName;
+      user.accountNumber = req.body.accountNumber;
+      user.bankName = req.body.bankName;
+
+      const newUser = await user.save();
+      res.send({
+        account: {
+          accountName: newUser.accountName,
+          bankName: newUser.bankName,
+          accountNumber: newUser.accountNumber,
+        },
+        success: true,
+        message: "Success",
+      });
+    } else {
+      res.send({
+        success: false,
+        message: "Invalid Email or Password",
+      });
+    }
   })
 );
 
