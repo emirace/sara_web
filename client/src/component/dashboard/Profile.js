@@ -85,10 +85,11 @@ export default function Profile() {
     const getAccount = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get("/api/users/account", {
+        const { data } = await axios.get("/api/accounts", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        setAccount(data.account);
+        console.log(data);
+        setAccount(data.accounts);
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -112,8 +113,8 @@ export default function Profile() {
     }
     setLoading2(true);
     try {
-      const { data } = await axios.put(
-        "/api/users/updateaccount",
+      const { data } = await axios.post(
+        "/api/accounts",
         {
           accountName,
           accountNumber,

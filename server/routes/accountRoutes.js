@@ -8,7 +8,7 @@ const accountRouter = express.Router();
 accountRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const accounts = await Account.find();
+    const accounts = await Account.findOne({ type: "Admin" });
     res.send({
       success: true,
       message: "Sucessfully",
@@ -45,18 +45,30 @@ accountRouter.post(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const account = new Account({
-      accountName: req.body.accountName,
-      accountNumber: req.body.accountNumber,
-      bankName: req.body.bankName,
-    });
-
-    const newAccount = await account.save();
-    res.send({
-      success: true,
-      message: "Account Created Sucessfully",
-      account: newAccount,
-    });
+    const prevAccount = await Account.findOne({ type: "Admin" });
+    if (prevAccount) {
+      prevAccount.accountName = req.body.accountName;
+      prevAccount.accountNumber = req.body.accountNumber;
+      prevAccount.bankName = req.body.bankName;
+      const newAccount = await prevAccount.save();
+      res.send({
+        success: true,
+        message: "Account Created Sucessfully",
+        account: newAccount,
+      });
+    } else {
+      const account = new Account({
+        accountName: req.body.accountName,
+        accountNumber: req.body.accountNumber,
+        bankName: req.body.bankName,
+      });
+      const newAccount = await account.save();
+      res.send({
+        success: true,
+        message: "Account Created Sucessfully",
+        account: newAccount,
+      });
+    }
   })
 );
 

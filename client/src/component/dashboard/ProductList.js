@@ -160,8 +160,10 @@ export default function ProductList({ setShowMobileMenu }) {
   };
 
   const [loading, setLoading] = useState(true);
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [error, setError] = useState("");
   const [products, setProducts] = useState([]);
+  const [refresh, setRefresh] = useState(true);
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -178,7 +180,22 @@ export default function ProductList({ setShowMobileMenu }) {
       }
     };
     getProducts();
-  }, [userInfo]);
+  }, [userInfo, refresh]);
+
+  const deletehandle = async (productId) => {
+    try {
+      setLoadingDelete(true);
+      const { data } = await axios.delete(`/api/products/${productId}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      if (data.success) {
+        setRefresh(!refresh);
+      }
+      setLoadingDelete(false);
+    } catch (err) {
+      setLoadingDelete(false);
+    }
+  };
 
   return (
     <Container>
@@ -229,9 +246,14 @@ export default function ProductList({ setShowMobileMenu }) {
                 {product.price}
               </Tdata>
               <Tdata>
-                <View onClick={() => navigate(`/product/${product.slug}`)}>
-                  View
-                </View>
+                <div style={{ display: "flex" }}>
+                  <View onClick={() => navigate(`/product/${product.slug}`)}>
+                    View
+                  </View>
+
+                  <View onClick={() => deletehandle(product._id)}>Delete</View>
+                  {loadingDelete && <LoadingBox />}
+                </div>
               </Tdata>
             </Trow>
           ))}

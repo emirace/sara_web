@@ -162,6 +162,9 @@ export default function CatalogueList({ setShowMobileMenu }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [catalogues, setCatalogues] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+
   useEffect(() => {
     const getCatalogues = async () => {
       try {
@@ -178,7 +181,22 @@ export default function CatalogueList({ setShowMobileMenu }) {
       }
     };
     getCatalogues();
-  }, [userInfo]);
+  }, [userInfo, refresh]);
+
+  const deletehandle = async (catalogueId) => {
+    try {
+      setLoadingDelete(true);
+      const { data } = await axios.delete(`/api/catalogues/${catalogueId}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      if (data.success) {
+        setRefresh(!refresh);
+      }
+      setLoadingDelete(false);
+    } catch (err) {
+      setLoadingDelete(false);
+    }
+  };
 
   return (
     <Container>
@@ -222,9 +240,15 @@ export default function CatalogueList({ setShowMobileMenu }) {
               <Tdata>{catalogue._id}</Tdata>
               <Tdata>{catalogue.name}</Tdata>
               <Tdata>
-                <View onClick={() => navigate(`/catalogue/${catalogue._id}`)}>
-                  View
-                </View>
+                <div style={{ display: "flex" }}>
+                  <View onClick={() => navigate(`/catalogue/${catalogue._id}`)}>
+                    View
+                  </View>
+                  <View onClick={() => deletehandle(catalogue._id)}>
+                    Delete
+                  </View>
+                  {loadingDelete && <LoadingBox />}
+                </div>
               </Tdata>
             </Trow>
           ))}

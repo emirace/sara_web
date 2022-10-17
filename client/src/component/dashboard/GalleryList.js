@@ -161,7 +161,10 @@ export default function GalleryList({ setShowMobileMenu }) {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [loadingDelete, setLoadingDelete] = useState(false);
   const [galleries, setGalleries] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+
   useEffect(() => {
     const getGalleries = async () => {
       try {
@@ -178,7 +181,22 @@ export default function GalleryList({ setShowMobileMenu }) {
       }
     };
     getGalleries();
-  }, [userInfo]);
+  }, [userInfo, refresh]);
+
+  const deletehandle = async (galleryId) => {
+    try {
+      setLoadingDelete(true);
+      const { data } = await axios.delete(`/api/galleries/${galleryId}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
+      if (data.success) {
+        setRefresh(!refresh);
+      }
+      setLoadingDelete(false);
+    } catch (err) {
+      setLoadingDelete(false);
+    }
+  };
 
   return (
     <Container>
@@ -222,9 +240,13 @@ export default function GalleryList({ setShowMobileMenu }) {
               <Tdata>{gallery._id}</Tdata>
               <Tdata>{gallery.name}</Tdata>
               <Tdata>
-                <View onClick={() => navigate(`/gallery/${gallery._id}`)}>
-                  View
-                </View>
+                <div style={{ display: "flex" }}>
+                  <View onClick={() => navigate(`/gallery/${gallery._id}`)}>
+                    View
+                  </View>
+                  <View onClick={() => deletehandle(gallery._id)}>Delete</View>
+                  {loadingDelete && <LoadingBox />}
+                </div>
               </Tdata>
             </Trow>
           ))}

@@ -81,7 +81,7 @@ export default function BookOrderDetailPage() {
       try {
         setLoading(true);
         const { data } = await axios.get(`/api/bookorders/${orderId}`);
-        setOrder(data.order);
+        setOrder(data.bookOrder);
         console.log(data);
         setLoading(false);
       } catch (err) {

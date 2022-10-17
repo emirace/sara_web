@@ -1,4 +1,5 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import GallaryProduct from "../component/GallaryProduct";
 import { color } from "../constant/parameters";
@@ -35,21 +36,25 @@ const Content = styled.div`
   border-bottom: 1px solid;
 `;
 
-const images = [
-  { key: 1, src: "cat1.webp" },
-  { key: 2, src: "cat2.jpg" },
-  { key: 3, src: "cat3.jpg" },
-  { key: 4, src: "cat4.jpg" },
-  { key: 5, src: "cat5.jpg" },
-  { key: 6, src: "cat6.jpg" },
-  { key: 7, src: "cat7.jfif" },
-  { key: 8, src: "cat8.jfif" },
-  { key: 9, src: "cat9.webp" },
-  { key: 10, src: "cat10.png" },
-  { key: 11, src: "cat11.jpg" },
-  { key: 12, src: "cat12.webp" },
-];
 export default function AccessoriesPage() {
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get("/api/products/");
+        console.log(data);
+        setProducts(data.products);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    getProducts();
+  }, []);
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}>ACCESORIES</h1>

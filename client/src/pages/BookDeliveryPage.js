@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import LoadingBox from "../component/LoadingBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 
@@ -174,6 +175,24 @@ export default function BookDeliveryPage() {
     state: "",
   });
   const [error, setError] = useState("");
+  const [account, setAccount] = useState(null);
+  const [loadingAccount, setLoadingAccount] = useState(true);
+
+  useEffect(() => {
+    const getAccount = async () => {
+      setLoadingAccount(true);
+      try {
+        const { data } = await axios.get("/api/accounts");
+        console.log(data);
+        setAccount(data.accounts);
+        setLoadingAccount(false);
+      } catch (err) {
+        setLoadingAccount(false);
+        setError(err.message);
+      }
+    };
+    getAccount();
+  }, []);
 
   const handleOnChange = (text, input) => {
     setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
@@ -422,44 +441,55 @@ export default function BookDeliveryPage() {
         return (
           <div>
             <SubHeading>Make Payment</SubHeading>
-            <Form>
-              <OptionCont>
-                <Label>Account Number</Label>
-              </OptionCont>
+            {loadingAccount ? (
+              <LoadingBox />
+            ) : (
+              <Form>
+                <OptionCont>
+                  <Label>Account Number</Label>
+                  <Label>{account.accountNumber}</Label>
+                </OptionCont>
 
-              <OptionCont>
-                <Label>Account Name</Label>
-              </OptionCont>
-              <OptionCont>
-                <Label>Bank Name</Label>
-              </OptionCont>
+                <OptionCont>
+                  <Label>Account Name</Label>
+                  <Label>{account.accountName}</Label>
+                </OptionCont>
+                <OptionCont>
+                  <Label>Bank Name</Label>
+                  <Label>{account.bankName}</Label>
+                </OptionCont>
 
-              <OptionCont style={{ padding: "20px" }}>
-                <Label>
-                  Upload the screenshort of Receipt/teller to comfirm payment
-                </Label>
-                {input.proof && (
-                  <img src={input.proof} alt="img" style={{ width: "100px" }} />
-                )}
-                <ImageLabel htmlFor="receipt">
-                  <AiOutlinePicture /> Add Receipt
-                </ImageLabel>
-                {error.proof && <Error>{error.proof}</Error>}
+                <OptionCont style={{ padding: "20px" }}>
+                  <Label>
+                    Upload the screenshort of Receipt/teller to comfirm payment
+                  </Label>
+                  {input.proof && (
+                    <img
+                      src={input.proof}
+                      alt="img"
+                      style={{ width: "100px" }}
+                    />
+                  )}
+                  <ImageLabel htmlFor="receipt">
+                    <AiOutlinePicture /> Add Receipt
+                  </ImageLabel>
+                  {error.proof && <Error>{error.proof}</Error>}
 
-                <input
-                  type="file"
-                  id="receipt"
-                  onFocus={() => handleError(null, "deliveryPhone")}
-                  style={{ display: "none" }}
-                  onChange={(e) => handleUpload(e)}
-                />
-              </OptionCont>
+                  <input
+                    type="file"
+                    id="receipt"
+                    onFocus={() => handleError(null, "deliveryPhone")}
+                    style={{ display: "none" }}
+                    onChange={(e) => handleUpload(e)}
+                  />
+                </OptionCont>
 
-              <ButtonCont>
-                <CheckOutButton onClick={handleOrder}>Order</CheckOutButton>
-                <Back onClick={() => setTab("delivery")}>Back</Back>
-              </ButtonCont>
-            </Form>
+                <ButtonCont>
+                  <CheckOutButton onClick={handleOrder}>Order</CheckOutButton>
+                  <Back onClick={() => setTab("delivery")}>Back</Back>
+                </ButtonCont>
+              </Form>
+            )}
           </div>
         );
 
