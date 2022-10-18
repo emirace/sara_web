@@ -8,7 +8,7 @@ const catalogueRouter = express.Router();
 catalogueRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const catalogues = await Catalogue.find();
+    const catalogues = await Catalogue.find().sort({ createdAt: -1 });
     res.send({
       success: true,
       message: "Sucessfully",

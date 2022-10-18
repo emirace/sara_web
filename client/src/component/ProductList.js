@@ -33,6 +33,8 @@ export default function ProductList() {
     <LoadingBox />
   ) : error ? (
     <div>{error}</div>
+  ) : !products.length ? (
+    <div>No Product Found</div>
   ) : (
     <div style={{ padding: "0 5vw" }}>
       <Container>

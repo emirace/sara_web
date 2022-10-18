@@ -8,7 +8,7 @@ const galleryRouter = express.Router();
 galleryRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const galleries = await Gallery.find();
+    const galleries = await Gallery.find().sort({ createdAt: -1 });
     res.send({
       success: true,
       message: "Sucessfully",

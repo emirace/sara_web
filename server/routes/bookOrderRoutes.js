@@ -10,7 +10,7 @@ bookOrderRouter.get(
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const bookOrders = await BookOrder.find();
+    const bookOrders = await BookOrder.find().sort({ createdAt: -1 });
     res.send({
       success: true,
       message: "Sucessfully",

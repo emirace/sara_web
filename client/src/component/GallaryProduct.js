@@ -81,7 +81,6 @@ export default function GallaryProduct({ product }) {
   };
   return (
     <Product>
-      {console.log(product)}
       <Image src={`${product.image}`} alt="img" />
       <Name className="name">{product.name}</Name>
       <Link to={`/product/${product.slug}`}>

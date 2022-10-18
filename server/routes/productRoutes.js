@@ -9,7 +9,22 @@ const productRouter = express.Router();
 productRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find();
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.send({
+      success: true,
+      message: "Sucessfully",
+      products,
+    });
+  })
+);
+
+// get all product category
+productRouter.get(
+  "/:category",
+  expressAsyncHandler(async (req, res) => {
+    const products = await Product.find({ category: req.params.category }).sort(
+      { createdAt: -1 }
+    );
     res.send({
       success: true,
       message: "Sucessfully",
@@ -21,7 +36,7 @@ productRouter.get(
 // get a product
 
 productRouter.get(
-  "/:slug",
+  "/product/:slug",
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findOne({ slug: req.params.slug });
     if (product) {
@@ -145,6 +160,81 @@ productRouter.put(
         message: "Product not Found",
       });
     }
+  })
+);
+
+//search product
+
+productRouter.get(
+  "/search",
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const searchQuery = query.query || "";
+    const category = query.category || "";
+    const price = query.price || "";
+    const order = query.order || "";
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                name: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                category: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                material: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const categoryFilter = category && category !== "all" ? { category } : {};
+    price && price !== "all"
+      ? {
+          price: {
+            $gte: Number(price.split("-")[0]),
+            $lte: Number(price.split("-")[1]),
+          },
+        }
+      : {};
+
+    const sortOrder =
+      order === "lowest"
+        ? { price: 1 }
+        : order === "highest"
+        ? { price: -1 }
+        : order === "newest"
+        ? { creatAt: -1 }
+        : order === "discount"
+        ? { updatedAt: -1 }
+        : { _id: -1 };
+    const products = await Product.find({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+    }).sort(sortOrder);
+
+    const countProducts = await Product.countDocuments({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+    });
+    res.send({
+      success: true,
+      message: "Sucessfully",
+      products,
+      countProducts,
+    });
   })
 );
 

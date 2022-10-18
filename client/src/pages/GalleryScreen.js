@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
 import Product from "../component/Product";
 import { color } from "../constant/parameters";
 
@@ -74,6 +75,8 @@ export default function GalleryScreen() {
           <LoadingBox />
         ) : error ? (
           <div>{error}</div>
+        ) : !galleries.length ? (
+          <MessageBox>No Image Found</MessageBox>
         ) : (
           galleries.map((product) => (
             <Product key={product._id} product={product} />

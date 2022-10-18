@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import GallaryProduct from "../component/GallaryProduct";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
 import { color } from "../constant/parameters";
 import { products } from "../utils/data";
 
@@ -44,7 +46,7 @@ export default function AccessoriesPage() {
     const getProducts = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get("/api/products/");
+        const { data } = await axios.get("/api/products/accesories");
         console.log(data);
         setProducts(data.products);
         setLoading(false);
@@ -67,11 +69,19 @@ export default function AccessoriesPage() {
         <Item>ACCESORIES</Item>
       </Category>
       <Content>
-        {products.map((product) => (
-          <>
-            <GallaryProduct key={product._id} product={product} />
-          </>
-        ))}
+        {loading ? (
+          <LoadingBox />
+        ) : error ? (
+          <MessageBox type="error">{error}</MessageBox>
+        ) : !products.length ? (
+          <MessageBox>No Product Found</MessageBox>
+        ) : (
+          products.map((product) => (
+            <>
+              <GallaryProduct key={product._id} product={product} />
+            </>
+          ))
+        )}
       </Content>
     </Container>
   );

@@ -1,6 +1,9 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import GallaryProduct from "../component/GallaryProduct";
+import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
 import { color } from "../constant/parameters";
 import { products } from "../utils/data";
 
@@ -50,6 +53,24 @@ const images = [
   { key: 12, src: "cat12.webp" },
 ];
 export default function OwambePage() {
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(null);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get("/api/products/owambe");
+        console.log(data);
+        setProducts(data.products);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+    getProducts();
+  }, []);
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}>OWAMBE</h1>
@@ -62,12 +83,19 @@ export default function OwambePage() {
         <Item>ACCESORIES</Item>
       </Category>
       <Content>
-        {products.map((product) => (
-          <>
-            {console.log(product)}
-            <GallaryProduct key={product._id} product={product} />
-          </>
-        ))}
+        {loading ? (
+          <LoadingBox />
+        ) : error ? (
+          <MessageBox type="error">{error}</MessageBox>
+        ) : !products.length ? (
+          <MessageBox>No Product Found</MessageBox>
+        ) : (
+          products.map((product) => (
+            <>
+              <GallaryProduct key={product._id} product={product} />
+            </>
+          ))
+        )}
       </Content>
     </Container>
   );

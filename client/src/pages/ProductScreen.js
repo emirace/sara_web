@@ -131,7 +131,7 @@ export default function ProductScreen() {
     const getProduct = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const { data } = await axios.get(`/api/products/${slug}`, {
+        const { data } = await axios.get(`/api/products/product/${slug}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         if (data.success) {

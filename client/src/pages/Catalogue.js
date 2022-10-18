@@ -7,9 +7,10 @@ import Model from "../component/Model";
 import { Store } from "../Store";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
+import MessageBox from "../component/MessageBox";
 
 const Container = styled.div`
-  padding: 0 5vw;
+  padding: 5vw;
 `;
 const Content = styled.div`
   -webkit-column-count: 4;
@@ -153,6 +154,8 @@ export default function Catalogue() {
           <LoadingBox />
         ) : error ? (
           <div>{error}</div>
+        ) : !catalogues.length ? (
+          <MessageBox>No Image Found</MessageBox>
         ) : (
           catalogues.map((x) => (
             <ImageCont key={x.key}>
