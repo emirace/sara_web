@@ -30,6 +30,15 @@ const Col = styled.div`
   flex: 1;
   justify-content: center;
 `;
+const Left = styled.div`
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  @media (max-width: 480px) {
+    display: none;
+  }
+`;
 const LogoCont = styled.div`
   width: 100%;
   display: flex;
@@ -125,11 +134,11 @@ export default function LoginPage() {
   return (
     <Container mode={mode}>
       <Content>
-        <Col>
+        <Left>
           <LogoCont>
             <Logo src="/images/saralzwhite.png" alt="logo" />
           </LogoCont>
-        </Col>
+        </Left>
         <Col style={{ background: color.border }}>
           <Form>
             <Title>Welcome!</Title>
