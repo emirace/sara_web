@@ -9,6 +9,7 @@ const initialState = {
   mode: "darkmode",
   style: null,
   bookOrder: null,
+  location: "",
 };
 
 function reducer(state, action) {
@@ -46,6 +47,8 @@ function reducer(state, action) {
 
     case "USER_SIGNIN":
       return { ...state, userInfo: action.payload };
+    case "ADD_LOCATION":
+      return { ...state, location: action.payload };
     case "USER_SIGNOUT":
       return {
         ...state,

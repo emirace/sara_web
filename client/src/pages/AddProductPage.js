@@ -93,6 +93,7 @@ const Textarea = styled.textarea`
 `;
 
 const Submit = styled.div`
+  display: flex;
   margin: 15px;
   background: ${color.main};
   color: white;
@@ -141,6 +142,8 @@ const Checkbox = styled.input`
 const categories = [
   { value: "Owambe", label: "Owambe" },
   { value: "Casual", label: "Casual" },
+  { value: "Corporate", label: "Corporate" },
+  { value: "Accesories", label: "Accesories" },
 ];
 
 const currency1 = [
@@ -169,6 +172,7 @@ export default function AddProductPage() {
   const [deliveryTime, setDeliveryTime] = useState("");
   const [loading, setLoading] = useState(false);
   const [priceNigeria, setPriceNigeria] = useState("");
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -200,7 +204,9 @@ export default function AddProductPage() {
       setLoading(false);
       navigate("/dashboard");
     } catch (err) {
+      setLoading(false);
       console.log(err);
+      setError(err.message);
     }
   };
   const [loadingImage, setLoadingImage] = useState(false);
@@ -380,9 +386,10 @@ export default function AddProductPage() {
           </Section>
         </Right>
       </Wrapper>
+      {error && <div style={{ color: "red" }}> {error}</div>}
       <Submit onClick={handleSubmit}>
-        <LoadingBox as="span" animation="border" size="sm" aria-hidden="true" />{" "}
-        Save
+        {loading && <LoadingBox comn="inline" height={20} width={20} />}
+        <span style={{ marginLeft: "10px" }}>Save</span>
       </Submit>
     </Container>
   );

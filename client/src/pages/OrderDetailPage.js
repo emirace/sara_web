@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
@@ -7,6 +7,7 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
+import { Store } from "../Store";
 
 const Container = styled.div`
   padding: 5vw 10vw;
@@ -38,6 +39,9 @@ const OrderItem = styled.div`
 `;
 const Row = styled.div`
   display: flex;
+  @media (max-width: 490px) {
+    flex-direction: column;
+  }
 `;
 const Image = styled.img`
   width: 150px;
@@ -65,8 +69,18 @@ const Value = styled.div`
   margin: 5px;
   flex: 2;
 `;
+
+const Address = styled.div`
+  flex: 1;
+  margin-left: 20px;
+  @media (max-width: 490px) {
+    margin-left: 0;
+  }
+`;
 export default function OrderDetailPage() {
   const { id: orderId } = useParams();
+  const { state } = useContext(Store);
+  const { location } = state;
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -106,7 +120,7 @@ export default function OrderDetailPage() {
       <Title>ITEMS IN YOUR ORDER</Title>
       <Section>
         <div>
-          <Status>Delivered</Status>
+          <Status>Proccessing</Status>
         </div>
         <Key>
           On {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
@@ -123,10 +137,14 @@ export default function OrderDetailPage() {
                   <Link to={`/product/${item.slug}`}>
                     <Key>{item.name}</Key>
                   </Link>
-                  <div></div>
                   <Key>
-                    {item.discount &&
-                      (100 - Number(item.discount)) * Number(item.price)}
+                    {location === "NG"
+                      ? `NGN ${
+                          (Number(100 - item.discount) / 100) *
+                          Number(item.priceNigeria)
+                        }`
+                      : `${item.currency}
+              ${(Number(100 - item.discount) / 100) * Number(item.price)}`}
                   </Key>
                 </Details>
               </Row>
@@ -157,7 +175,7 @@ export default function OrderDetailPage() {
             </Row>
           </Section>
         </div>
-        <div style={{ flex: "1", marginLeft: "20px" }}>
+        <Address>
           <Title>Delivery Details</Title>
           <Section>
             <Row>
@@ -177,7 +195,7 @@ export default function OrderDetailPage() {
               <Value>{order.deliveryAddress.country} </Value>
             </Row>
           </Section>
-        </div>
+        </Address>
       </Row>
       <Title>PAYMENT</Title>
       <Section>

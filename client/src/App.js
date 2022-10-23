@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "./component/Navbar";
 import styled from "styled-components";
 import HomePage from "./pages/HomePage";
@@ -27,6 +27,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderDetailPage from "./pages/OrderDetailPage";
 import BookOrderDetailPage from "./pages/BookOrderDetailPage";
 import AllProductPage from "./pages/AllProductPage";
+import axios from "axios";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -35,8 +36,18 @@ const Container = styled.div`
 `;
 const Body = styled.body``;
 export default function App() {
-  const { state } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { mode } = state;
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const getLocation = async () => {
+      const { data } = await axios.get("/api/locations");
+      console.log(data);
+      ctxDispatch({ type: "ADD_LOCATION", payload: data });
+      setLoading(false);
+    };
+    getLocation();
+  }, []);
   return (
     <Container mode={mode}>
       <Navbar />

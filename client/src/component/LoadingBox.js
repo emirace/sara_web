@@ -1,10 +1,29 @@
 import React from "react";
-import Spinner from "react-bootstrap/Spinner";
+import ReactLoading from "react-loading";
 
-export default function LoadingBox({ props }) {
+export default function LoadingBox(props) {
   return (
-    <Spinner animation="border" role="status" {...props}>
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
+    <div
+      style={
+        props && props.comn === "inline"
+          ? {}
+          : {
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100px",
+            }
+      }
+    >
+      {console.log(props)}
+      <ReactLoading
+        type="spinningBubbles"
+        color="white"
+        height={60}
+        width={60}
+        {...props}
+      />
+    </div>
   );
 }

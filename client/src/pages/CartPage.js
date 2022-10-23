@@ -136,7 +136,7 @@ const Empty = styled.div`
 `;
 export default function CartPage() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { cart } = state;
+  const { cart, location } = state;
   const navigate = useNavigate();
   const removeItem = (product) => {
     ctxDispatch({ type: "REMOVE_CART_ITEM", payload: product });
@@ -160,7 +160,17 @@ export default function CartPage() {
                   <Name>{cartItem.name}</Name>
                   <Detail>desscription</Detail>
                 </Details>
-                <Price>${cartItem.price}</Price>
+                <Price>
+                  {location === "NG"
+                    ? `NGN ${
+                        (Number(100 - cartItem.discount) / 100) *
+                        Number(cartItem.priceNigeria)
+                      }`
+                    : `${cartItem.currency}
+              ${
+                (Number(100 - cartItem.discount) / 100) * Number(cartItem.price)
+              }`}
+                </Price>
                 <Close onClick={() => removeItem(cartItem)}>
                   <AiOutlineClose />
                 </Close>
@@ -186,10 +196,19 @@ export default function CartPage() {
               <SumCont>
                 <SumItem>
                   <SumKey>Subtotal</SumKey>
-                  <SumValue>${cart.reduce((a, c) => a + c.price, 0)}</SumValue>
+                  <SumValue>
+                    {location === "NG" ? "NGN" : "EUR"}
+                    {cart.reduce(
+                      (a, c) =>
+                        a + location === "NG"
+                          ? (Number(100 - c.discount) / 100) * c.priceNigeria
+                          : (Number(100 - c.discount) / 100) * c.price,
+                      0
+                    )}
+                  </SumValue>
                 </SumItem>
 
-                <SumItem>
+                {/* <SumItem>
                   <SumKey>Shipping</SumKey>
                   <SumValue>$0</SumValue>
                 </SumItem>
@@ -197,7 +216,7 @@ export default function CartPage() {
                 <SumItem>
                   <SumKey>Tax</SumKey>
                   <SumValue>$0</SumValue>
-                </SumItem>
+                </SumItem> */}
               </SumCont>
               <Promo>
                 <SumKey>Promocode</SumKey>
@@ -209,7 +228,16 @@ export default function CartPage() {
             <CheckOutCont>
               <TotalCont>
                 <Total>Total</Total>
-                <Value>${cart.reduce((a, c) => a + c.price, 0)}</Value>
+                <Value>
+                  {location === "NG" ? "NGN" : "EUR"}
+                  {cart.reduce(
+                    (a, c) =>
+                      a + location === "NG"
+                        ? (Number(100 - c.discount) / 100) * c.priceNigeria
+                        : (Number(100 - c.discount) / 100) * c.price,
+                    0
+                  )}
+                </Value>
               </TotalCont>
               <CheckOutButton onClick={delivery}>Checkout</CheckOutButton>
             </CheckOutCont>

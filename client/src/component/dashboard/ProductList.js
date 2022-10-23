@@ -168,7 +168,7 @@ export default function ProductList({ setShowMobileMenu }) {
     const getProducts = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get("/api/products/", {
+        const { data } = await axios.get("/api/products/all/admin", {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         console.log(data);
@@ -200,6 +200,7 @@ export default function ProductList({ setShowMobileMenu }) {
   return (
     <Container>
       <h1>Product Lists</h1>
+
       <SearchCont>
         <Search>
           <IoSearchOutline color="black" />

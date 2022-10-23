@@ -119,7 +119,7 @@ const reducer = (state, action) => {
 };
 export default function ProductScreen() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
+  const { location } = state;
   const { slug } = useParams();
 
   const [{ product, loading, error }, dispatch] = useReducer(reducer, {
@@ -131,9 +131,7 @@ export default function ProductScreen() {
     const getProduct = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const { data } = await axios.get(`/api/products/product/${slug}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(`/api/products/product/${slug}`);
         if (data.success) {
           dispatch({ type: "FETCH_SUCCESS", payload: data.product });
         } else {
@@ -145,7 +143,7 @@ export default function ProductScreen() {
       }
     };
     getProduct();
-  }, [slug, userInfo]);
+  }, [slug]);
 
   const addToCart = (product) => {
     ctxDispatch({ type: "ADD_TO_CART", payload: product });
@@ -165,8 +163,15 @@ export default function ProductScreen() {
           <Name>{product.name}</Name>
           <div style={{ display: "flex", alignItems: "center" }}>
             <Price>
-              {product.currency}
-              {(Number(100 - product.discount) / 100) * Number(product.price)}
+              {location === "NG"
+                ? `NGN ${
+                    (Number(100 - product.discount) / 100) *
+                    Number(product.priceNigeria)
+                  }`
+                : `${product.currency}
+              ${
+                (Number(100 - product.discount) / 100) * Number(product.price)
+              }`}
             </Price>
             {product.discount && <Discount>{product.price}</Discount>}
             {product.discount && (
@@ -179,11 +184,11 @@ export default function ProductScreen() {
           <Icons></Icons>
           <SizeCont>
             <div>Select Size:</div>
-            <SizeValue>XM</SizeValue>
+            {/* <SizeValue>XM</SizeValue>
             <SizeValue>S</SizeValue>
             <SizeValue>M</SizeValue>
             <SizeValue>L</SizeValue>
-            <SizeValue>XL</SizeValue>
+            <SizeValue>XL</SizeValue> */}
           </SizeCont>
           <CheckOutButton onClick={() => addToCart(product)}>
             ADD TO CART

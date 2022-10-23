@@ -101,21 +101,26 @@ export default function MobileMenu() {
               <BiChevronRight />
             </Li>
           </Link>
-          <Li onClick={() => setShowMenu(false)}>
-            <div>CASUAL</div> <BiChevronRight />
-          </Li>
-          <Li>
-            <div>COROPERATE</div> <BiChevronRight />
-          </Li>
-          <Li>
-            <div>OWAMBE</div> <BiChevronRight />
-          </Li>
-          <Li>
-            <div>ACCESORIES</div> <BiChevronRight />
-          </Li>
-          <Li>
-            <div>BAGS</div> <BiChevronRight />
-          </Li>
+          <Link to="/casual">
+            <Li onClick={() => setShowMenu(false)}>
+              <div>CASUAL</div> <BiChevronRight />
+            </Li>
+          </Link>
+          <Link to="/corperate">
+            <Li onClick={() => setShowMenu(false)}>
+              <div>COROPERATE</div> <BiChevronRight />
+            </Li>
+          </Link>
+          <Link to="/owambe">
+            <Li onClick={() => setShowMenu(false)}>
+              <div>OWAMBE</div> <BiChevronRight />
+            </Li>
+          </Link>
+          <Link to="/accesories">
+            <Li onClick={() => setShowMenu(false)}>
+              <div>ACCESORIES</div> <BiChevronRight />
+            </Li>
+          </Link>
         </MenuCont>
       )}
     </Container>

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { color } from "../../constant/parameters";
 import { Store } from "../../Store";
+import { BiChevronLeft } from "react-icons/bi";
 import LoadingBox from "../LoadingBox";
 
 const Container = styled.div``;
@@ -70,7 +71,20 @@ const Button = styled.div`
     margin-left: auto;
   }
 `;
-export default function Profile() {
+
+const Back = styled.div`
+  display: none;
+  align-items: center;
+  padding: 0 10px;
+
+  & svg {
+    font-size: 20px;
+  }
+  @media (max-width: 550px) {
+    display: flex;
+  }
+`;
+export default function Profile({ setShowMobileMenu }) {
   const { state } = useContext(Store);
   const { userInfo } = state;
   const [accountName, setAccountName] = useState("");
@@ -138,6 +152,14 @@ export default function Profile() {
   return (
     <Container>
       <Title>Welcome {userInfo.username}</Title>
+      <Back
+        onClick={() => {
+          setShowMobileMenu(true);
+        }}
+      >
+        <BiChevronLeft />
+        Back
+      </Back>
       <Section>
         <Heading>Bank Detail</Heading>
         {loading ? (

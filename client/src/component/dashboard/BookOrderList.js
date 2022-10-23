@@ -142,6 +142,14 @@ export default function BookOrderList({ setShowMobileMenu }) {
   return (
     <Container>
       <h1>Order Lists</h1>
+      <Back
+        onClick={() => {
+          setShowMobileMenu(true);
+        }}
+      >
+        <BiChevronLeft />
+        Back
+      </Back>
       <SearchCont>
         <Search>
           <IoSearchOutline color="black" />

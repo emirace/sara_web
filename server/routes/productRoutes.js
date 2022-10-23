@@ -5,26 +5,93 @@ import { body, validationResult } from "express-validator";
 import { isAdmin, isAuth, slugify } from "../utils.js";
 const productRouter = express.Router();
 
-// get all product
 productRouter.get(
-  "/",
+  "/search",
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find().sort({ createdAt: -1 });
+    const { query } = req;
+    const searchQuery = query.query || "";
+    const category = query.category || "";
+    const price = query.price || "";
+    const order = query.order || "";
+    const queryFilter =
+      searchQuery && searchQuery !== "all"
+        ? {
+            $or: [
+              {
+                name: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                category: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+              {
+                material: {
+                  $regex: searchQuery,
+                  $options: "i",
+                },
+              },
+            ],
+          }
+        : {};
+    const categoryFilter = category && category !== "all" ? { category } : {};
+    price && price !== "all"
+      ? {
+          price: {
+            $gte: Number(price.split("-")[0]),
+            $lte: Number(price.split("-")[1]),
+          },
+        }
+      : {};
+
+    const sortOrder =
+      order === "lowest"
+        ? { price: 1 }
+        : order === "highest"
+        ? { price: -1 }
+        : order === "newest"
+        ? { creatAt: -1 }
+        : order === "discount"
+        ? { updatedAt: -1 }
+        : { _id: -1 };
+    const products = await Product.find({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+    }).sort(sortOrder);
+
+    const countProducts = await Product.countDocuments({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+    });
     res.send({
       success: true,
       message: "Sucessfully",
       products,
+      countProducts,
     });
   })
 );
 
-// get all product category
+// get all product
 productRouter.get(
-  "/:category",
+  "/all/:location",
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find({ category: req.params.category }).sort(
-      { createdAt: -1 }
-    );
+    const { location } = req.params;
+    const locationFilter =
+      location === "NG"
+        ? {
+            isNigeria: true,
+          }
+        : {};
+    const products = await Product.find({ ...locationFilter }).sort({
+      createdAt: -1,
+    });
     res.send({
       success: true,
       message: "Sucessfully",
@@ -51,6 +118,28 @@ productRouter.get(
         message: "Product not Found",
       });
     }
+  })
+);
+
+// get all product category
+productRouter.get(
+  "/:category/:location",
+  expressAsyncHandler(async (req, res) => {
+    const { category, location } = req.params;
+    const locationFilter =
+      location === "NG"
+        ? {
+            isNigeria: true,
+          }
+        : {};
+    const products = await Product.find({ category, ...locationFilter }).sort({
+      createdAt: -1,
+    });
+    res.send({
+      success: true,
+      message: "Sucessfully",
+      products,
+    });
   })
 );
 
@@ -164,79 +253,6 @@ productRouter.put(
 );
 
 //search product
-
-productRouter.get(
-  "/search",
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const searchQuery = query.query || "";
-    const category = query.category || "";
-    const price = query.price || "";
-    const order = query.order || "";
-    const queryFilter =
-      searchQuery && searchQuery !== "all"
-        ? {
-            $or: [
-              {
-                name: {
-                  $regex: searchQuery,
-                  $options: "i",
-                },
-              },
-              {
-                category: {
-                  $regex: searchQuery,
-                  $options: "i",
-                },
-              },
-              {
-                material: {
-                  $regex: searchQuery,
-                  $options: "i",
-                },
-              },
-            ],
-          }
-        : {};
-    const categoryFilter = category && category !== "all" ? { category } : {};
-    price && price !== "all"
-      ? {
-          price: {
-            $gte: Number(price.split("-")[0]),
-            $lte: Number(price.split("-")[1]),
-          },
-        }
-      : {};
-
-    const sortOrder =
-      order === "lowest"
-        ? { price: 1 }
-        : order === "highest"
-        ? { price: -1 }
-        : order === "newest"
-        ? { creatAt: -1 }
-        : order === "discount"
-        ? { updatedAt: -1 }
-        : { _id: -1 };
-    const products = await Product.find({
-      ...queryFilter,
-      ...categoryFilter,
-      ...priceFilter,
-    }).sort(sortOrder);
-
-    const countProducts = await Product.countDocuments({
-      ...queryFilter,
-      ...categoryFilter,
-      ...priceFilter,
-    });
-    res.send({
-      success: true,
-      message: "Sucessfully",
-      products,
-      countProducts,
-    });
-  })
-);
 
 productRouter.delete(
   "/:id",

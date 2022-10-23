@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema(
     material: { type: String, require: true },
     price: { type: Number, require: true },
     priceNigeria: { type: Number },
-    discount: { type: Number, require: true },
+    discount: { type: Number, require: true, default: 0 },
     deliveryTime: { type: Number },
     currency: { type: String, require: true },
     isNigeria: { type: Boolean, require: true },

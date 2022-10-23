@@ -1,10 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import GallaryProduct from "../component/GallaryProduct";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import { color } from "../constant/parameters";
+import { Store } from "../Store";
 
 const Container = styled.div`
   height: 100%;
@@ -38,17 +39,21 @@ const Content = styled.div`
 `;
 
 export default function CasualPage() {
+  const { state } = useContext(Store);
+  const { location } = state;
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState(null);
   const [error, setError] = useState("");
   useEffect(() => {
     const getProducts = async () => {
       try {
-        setLoading(true);
-        const { data } = await axios.get("/api/products/casual");
-        console.log(data);
-        setProducts(data.products);
-        setLoading(false);
+        if (location) {
+          setLoading(true);
+          const { data } = await axios.get(`/api/products/Casual/${location}`);
+          console.log(data);
+          setProducts(data.products);
+          setLoading(false);
+        }
       } catch (err) {
         setError(err.message);
         setLoading(false);
