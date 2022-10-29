@@ -388,8 +388,11 @@ export default function AddProductPage() {
       </Wrapper>
       {error && <div style={{ color: "red" }}> {error}</div>}
       <Submit onClick={handleSubmit}>
-        {loading && <LoadingBox comn="inline" height={20} width={20} />}
-        <span style={{ marginLeft: "10px" }}>Save</span>
+        {loading ? (
+          <LoadingBox comn="inline" type="bubbles" height={20} width={20} />
+        ) : (
+          "Save"
+        )}
       </Submit>
     </Container>
   );

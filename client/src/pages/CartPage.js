@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
+import { getCartTotalPrice } from "../utils/utils";
 
 const Container = styled.div`
   padding: 5vw;
@@ -26,6 +27,9 @@ const Item = styled.div`
   margin: 30px;
   display: flex;
   align-items: center;
+  & a {
+    cursor: pointer;
+  }
   @media (max-width: 500px) {
     margin: 30px 0;
   }
@@ -153,11 +157,15 @@ export default function CartPage() {
           {cart.length > 0 ? (
             cart.map((cartItem) => (
               <Item key={cartItem._id}>
-                <ImageCont>
-                  <Image src={`${cartItem.image}`} alt="img" />
-                </ImageCont>
+                <Link to={`/product/${cartItem.slug}`}>
+                  <ImageCont>
+                    <Image src={`${cartItem.image}`} alt="img" />
+                  </ImageCont>
+                </Link>
                 <Details>
-                  <Name>{cartItem.name}</Name>
+                  <Link to={`/product/${cartItem.slug}`}>
+                    <Name>{cartItem.name}</Name>
+                  </Link>
                   <Detail>desscription</Detail>
                 </Details>
                 <Price>
@@ -179,7 +187,9 @@ export default function CartPage() {
           ) : (
             <Empty>
               Cart is empty.{" "}
-              <span style={{ color: color.main }}> Continue shopping</span>
+              <span style={{ color: color.main }}>
+                <Link to="/allproduct"> Continue shopping</Link>
+              </span>
             </Empty>
           )}
         </Left>
@@ -198,13 +208,7 @@ export default function CartPage() {
                   <SumKey>Subtotal</SumKey>
                   <SumValue>
                     {location === "NG" ? "NGN" : "EUR"}
-                    {cart.reduce(
-                      (a, c) =>
-                        a + location === "NG"
-                          ? (Number(100 - c.discount) / 100) * c.priceNigeria
-                          : (Number(100 - c.discount) / 100) * c.price,
-                      0
-                    )}
+                    {getCartTotalPrice(cart, location)}{" "}
                   </SumValue>
                 </SumItem>
 
@@ -230,13 +234,7 @@ export default function CartPage() {
                 <Total>Total</Total>
                 <Value>
                   {location === "NG" ? "NGN" : "EUR"}
-                  {cart.reduce(
-                    (a, c) =>
-                      a + location === "NG"
-                        ? (Number(100 - c.discount) / 100) * c.priceNigeria
-                        : (Number(100 - c.discount) / 100) * c.price,
-                    0
-                  )}
+                  {getCartTotalPrice(cart, location)}{" "}
                 </Value>
               </TotalCont>
               <CheckOutButton onClick={delivery}>Checkout</CheckOutButton>

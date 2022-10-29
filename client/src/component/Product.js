@@ -5,6 +5,7 @@ import { color } from "../constant/parameters";
 import { useNavigate } from "react-router-dom";
 import Model from "./Model";
 import { Store } from "../Store";
+import ImagrModel from "./ImagrModel";
 
 const Container = styled.div`
   position: relative;
@@ -107,7 +108,8 @@ export default function Product({ product }) {
         <Request onClick={() => bookoutfit(product)}>BOOK OUTFIT</Request>
       </ButtonCont>
       <Model showModel={showModel} setShowModel={setShowModel}>
-        <ModelImg src={product.image} alt="img" />
+        <ImagrModel images={[product.image, ...product.images]} />
+        {/* <ModelImg src={product.image} alt="img" /> */}
       </Model>
     </Container>
   );

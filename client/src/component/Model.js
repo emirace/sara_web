@@ -33,7 +33,7 @@ const ModelWrapper = styled.div`
     props.mode === "lightmode"
       ? "0 5px 16px rgba(0, 0, 0, 0.2)"
       : "0 5px 16px rgba(225, 225, 225, 0.2)"};
-  position: relative;
+
   z-index: 10;
   border-radius: 10px;
   background: ${(props) => (props.mode === "lightmode" ? "white" : "black")};

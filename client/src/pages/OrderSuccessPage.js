@@ -53,11 +53,11 @@ const Text = styled.div`
   font-weight: bold;
 `;
 export default function OrderSuccessPage() {
-  const { id: orderId } = useParams();
+  const { id: orderId, type } = useParams();
   const navigate = useNavigate();
 
   const handle = () => {
-    navigate(`/order/${orderId}`);
+    navigate(`/${type}/${orderId}`);
   };
   return (
     <Container>

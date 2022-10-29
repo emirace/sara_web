@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
+import { discountPrice, getCartTotalPrice } from "../utils/utils";
 
 const Container = styled.div`
   padding: 5vw;
@@ -159,7 +160,7 @@ const ImageLabel = styled.label`
 export default function DeliveryPage() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const navigate = useNavigate();
-  const { cart } = state;
+  const { cart, location } = state;
   const [tab, setTab] = useState("info");
   const [loading, setLoading] = useState(false);
   const [loadingImage, setLoadingImage] = useState(false);
@@ -175,6 +176,25 @@ export default function DeliveryPage() {
     state: "",
   });
   const [error, setError] = useState("");
+
+  const [account, setAccount] = useState(null);
+  const [loadingAccount, setLoadingAccount] = useState(true);
+
+  useEffect(() => {
+    const getAccount = async () => {
+      setLoadingAccount(true);
+      try {
+        const { data } = await axios.get("/api/accounts");
+        console.log(data);
+        setAccount(data.accounts);
+        setLoadingAccount(false);
+      } catch (err) {
+        setLoadingAccount(false);
+        setError(err.message);
+      }
+    };
+    getAccount();
+  }, []);
 
   const handleOnChange = (text, input) => {
     setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
@@ -297,13 +317,13 @@ export default function DeliveryPage() {
           firstName: input.firstName,
           phone: input.phone,
         },
-        totalPrice: cart.reduce((a, c) => a + c.price, 0),
+        totalPrice: getCartTotalPrice(cart, location),
         proof: input.proof,
       });
       console.log(data);
       if (data.success) {
         ctxDispatch({ type: "CLEAR_CART" });
-        navigate(`/ordercreated/${data.order._id}`);
+        navigate(`/ordercreated/order/${data.order._id}`);
       }
       setLoading(false);
     } catch (err) {
@@ -451,51 +471,71 @@ export default function DeliveryPage() {
         return (
           <div>
             <SubHeading>Make Payment</SubHeading>
-            <Form>
-              <OptionCont>
-                <Label>Account Number</Label>
-              </OptionCont>
+            {loadingAccount ? (
+              <LoadingBox />
+            ) : (
+              <Form>
+                <OptionCont>
+                  <Label>Account Number</Label>
+                  <Label>{account.accountNumber}</Label>
+                </OptionCont>
 
-              <OptionCont>
-                <Label>Account Name</Label>
-              </OptionCont>
-              <OptionCont>
-                <Label>Bank Name</Label>
-              </OptionCont>
+                <OptionCont>
+                  <Label>Account Name</Label>
+                  <Label>{account.accountName}</Label>
+                </OptionCont>
+                <OptionCont>
+                  <Label>Bank Name</Label>
+                  <Label>{account.bankName}</Label>
+                </OptionCont>
 
-              <OptionCont style={{ padding: "20px" }}>
-                <Label>
-                  Upload the screenshort of Receipt/teller to comfirm payment
-                </Label>
-                {input.proof && (
-                  <img src={input.proof} alt="img" style={{ width: "100px" }} />
-                )}
-                {loadingImage ? <LoadingBox /> : ""}
-                <ImageLabel htmlFor="receipt">
-                  <AiOutlinePicture /> Add Receipt
-                </ImageLabel>
-                {error.proof && <Error>{error.proof}</Error>}
+                <OptionCont style={{ padding: "20px" }}>
+                  <Label>
+                    Upload the screenshort of Receipt/teller to comfirm payment
+                  </Label>
+                  {input.proof && (
+                    <img
+                      src={input.proof}
+                      alt="img"
+                      style={{ width: "100px" }}
+                    />
+                  )}
+                  {loadingImage ? <LoadingBox /> : ""}
+                  <ImageLabel
+                    htmlFor="receipt"
+                    onClick={() => handleError(null, "proof")}
+                  >
+                    <AiOutlinePicture /> Add Receipt
+                  </ImageLabel>
+                  {error.proof && <Error>{error.proof}</Error>}
 
-                <input
-                  type="file"
-                  id="receipt"
-                  on={() => handleError(null, "proof")}
-                  style={{ display: "none" }}
-                  onChange={(e) => {
-                    handleUpload(e);
-                    handleError(null, "proof");
-                  }}
-                />
-                {console.log(input)}
-              </OptionCont>
+                  <input
+                    type="file"
+                    id="receipt"
+                    style={{ display: "none" }}
+                    onChange={(e) => handleUpload(e)}
+                  />
+                  {console.log(input)}
+                </OptionCont>
 
-              <ButtonCont>
-                <CheckOutButton onClick={handleOrder}>Order</CheckOutButton>
-                {loading ? <LoadingBox /> : ""}
+                <ButtonCont>
+                  <CheckOutButton onClick={loading ? "" : handleOrder}>
+                    {loading ? (
+                      <LoadingBox
+                        comn="inline"
+                        type="bubbles"
+                        height={30}
+                        width={30}
+                      />
+                    ) : (
+                      "Order"
+                    )}
+                  </CheckOutButton>
 
-                <Back onClick={() => setTab("delivery")}>Back</Back>
-              </ButtonCont>
-            </Form>
+                  <Back onClick={() => setTab("delivery")}>Back</Back>
+                </ButtonCont>
+              </Form>
+            )}
           </div>
         );
 
@@ -528,7 +568,10 @@ export default function DeliveryPage() {
                       <SumKey>{cartItem.name}</SumKey>
                       <div>desscription</div>
                     </div>
-                    <SumValue>${cartItem.price}</SumValue>
+                    <SumValue>
+                      {location === "NG" ? "NGN" : "EUR"}
+                      {discountPrice(cartItem, location)}
+                    </SumValue>
                   </SumItem>
                 ))}
               </SumCont>
@@ -536,7 +579,10 @@ export default function DeliveryPage() {
             <CheckOutCont>
               <TotalCont>
                 <Total>Total</Total>
-                <Value>${cart.reduce((a, c) => a + c.price, 0)}</Value>
+                <Value>
+                  {location === "NG" ? "NGN" : "EUR"}
+                  {getCartTotalPrice(cart, location)}
+                </Value>
               </TotalCont>
             </CheckOutCont>
           </div>

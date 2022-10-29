@@ -164,7 +164,7 @@ export default function BookOrderList({ setShowMobileMenu }) {
         <Content>
           <Trow>
             <Thead>ID</Thead>
-            <Thead>STYLE</Thead>
+            <Thead>STYLE TYPE</Thead>
             <Thead>PRICE</Thead>
             <Thead>DATE</Thead>
             <Thead>ACTION</Thead>
@@ -172,7 +172,9 @@ export default function BookOrderList({ setShowMobileMenu }) {
           {bookorders.map((order) => (
             <Trow>
               <Tdata>{order._id}</Tdata>
-              <Tdata></Tdata>
+              <Tdata style={{ textTransform: "capitalize" }}>
+                {order.styleType}
+              </Tdata>
               <Tdata>{order.price}</Tdata>
               <Tdata>{order.createdAt}</Tdata>
               <Tdata>

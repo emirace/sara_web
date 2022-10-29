@@ -177,6 +177,7 @@ export default function BookDeliveryPage() {
   const [error, setError] = useState("");
   const [account, setAccount] = useState(null);
   const [loadingAccount, setLoadingAccount] = useState(true);
+  const [loadingImage, setLoadingImage] = useState(false);
 
   useEffect(() => {
     const getAccount = async () => {
@@ -202,6 +203,7 @@ export default function BookDeliveryPage() {
   };
 
   const handleUpload = async (e) => {
+    setLoadingImage(true);
     const file = e.target.files[0];
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
@@ -212,7 +214,11 @@ export default function BookDeliveryPage() {
         },
       });
       handleOnChange(data.secure_url, "proof");
-    } catch (err) {}
+      setLoadingImage(false);
+    } catch (err) {
+      setLoadingImage(false);
+      handleError("Error uploading image, try again", "proof");
+    }
   };
 
   const handlebuyer = () => {
@@ -295,7 +301,8 @@ export default function BookDeliveryPage() {
       });
       console.log(data);
       if (data.success) {
-        navigate(`ordercreated/${data.order._id}`);
+        console.log("hello");
+        navigate(`/ordercreated/bookorder/${data.bookOrder._id}`);
       }
     } catch (err) {
       console.log(err);
@@ -470,7 +477,12 @@ export default function BookDeliveryPage() {
                       style={{ width: "100px" }}
                     />
                   )}
-                  <ImageLabel htmlFor="receipt">
+
+                  {loadingImage ? <LoadingBox /> : ""}
+                  <ImageLabel
+                    htmlFor="receipt"
+                    onClick={() => handleError(null, "proof")}
+                  >
                     <AiOutlinePicture /> Add Receipt
                   </ImageLabel>
                   {error.proof && <Error>{error.proof}</Error>}
@@ -478,14 +490,24 @@ export default function BookDeliveryPage() {
                   <input
                     type="file"
                     id="receipt"
-                    onFocus={() => handleError(null, "deliveryPhone")}
                     style={{ display: "none" }}
                     onChange={(e) => handleUpload(e)}
                   />
                 </OptionCont>
 
                 <ButtonCont>
-                  <CheckOutButton onClick={handleOrder}>Order</CheckOutButton>
+                  <CheckOutButton onClick={loading ? "" : handleOrder}>
+                    {loading ? (
+                      <LoadingBox
+                        comn="inline"
+                        type="bubbles"
+                        height={30}
+                        width={30}
+                      />
+                    ) : (
+                      "Order"
+                    )}
+                  </CheckOutButton>
                   <Back onClick={() => setTab("delivery")}>Back</Back>
                 </ButtonCont>
               </Form>

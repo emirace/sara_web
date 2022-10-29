@@ -28,6 +28,7 @@ import OrderDetailPage from "./pages/OrderDetailPage";
 import BookOrderDetailPage from "./pages/BookOrderDetailPage";
 import AllProductPage from "./pages/AllProductPage";
 import axios from "axios";
+import AboutPage from "./pages/AboutPage";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -62,10 +63,11 @@ export default function App() {
         <Route path="accessories" element={<AccessoriesPage />} />
         <Route path="bookorder" element={<BookOrderScreen />} />
         <Route path="cart" element={<CartPage />} />
-        <Route path="ordercreated/:id" element={<OrderSuccessPage />} />
+        <Route path="ordercreated/:type/:id" element={<OrderSuccessPage />} />
         <Route path="order/:id" element={<OrderDetailPage />} />
         <Route path="bookorder/:id" element={<BookOrderDetailPage />} />
         <Route path="allproduct" element={<AllProductPage />} />
+        <Route path="about" element={<AboutPage />} />
         <Route
           path="delivery"
           element={

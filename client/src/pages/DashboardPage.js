@@ -37,6 +37,7 @@ const Content = styled.div`
 const Option = styled.div`
   padding: 10px 20px;
   font-size: 15px;
+  cursor: pointer;
   & svg {
     margin-right: 5px;
     color: white;
@@ -109,7 +110,7 @@ export default function DashboardPage() {
             setShowMobileMenu(false);
           }}
         >
-          <AiOutlineShopping /> Booked Orders
+          <AiOutlineShopping /> Item Booked
         </Option>
         <Option
           onClick={() => {
@@ -117,7 +118,8 @@ export default function DashboardPage() {
             setShowMobileMenu(false);
           }}
         >
-          <AiOutlineShopping /> Orders
+          <AiOutlineShopping />
+          Product Orders
         </Option>
         <Option
           onClick={() => {

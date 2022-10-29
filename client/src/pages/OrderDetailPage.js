@@ -107,7 +107,7 @@ export default function OrderDetailPage() {
     <div>{error}</div>
   ) : (
     <Container>
-      <Headers>ORDER DEATAILS</Headers>
+      <Headers>ORDER DETAILS</Headers>
       <Section>
         <Key>Order number {order._id}</Key>
         <div>
@@ -193,6 +193,10 @@ export default function OrderDetailPage() {
             <Row>
               <Key1>Country</Key1>
               <Value>{order.deliveryAddress.country} </Value>
+            </Row>
+            <Row>
+              <Key1>Phone</Key1>
+              <Value>{order.deliveryAddress.phone} </Value>
             </Row>
           </Section>
         </Address>

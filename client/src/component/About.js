@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
 
@@ -10,7 +11,8 @@ const Image = styled.img`
 const Detail = styled.div`
   position: absolute;
   left: 50%;
-  top: 30px;
+  top: 50px;
+  max-width: 400px;
   @media (max-width: 480px) {
     left: 35%;
   }
@@ -39,15 +41,14 @@ export default function About() {
       <Detail>
         <Text>About Us</Text>
         <SmallText>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget
-          ultricies felis, sed posuere orci. Donec metus lectus, fringilla id
-          dignissim non, pulvinar sed nibh. Donec eleifend tortor mauris, ac
-          sodales diam blandit non. Proin tempor lectus odio, a semper erat
-          convallis eget. Mauris nibh augue, mattis vel condimentum in,
-          tincidunt ac velit. Morbi aliquet nisl in nisl posuere, eget euismod
-          nulla lobortis. Nunc sagittis dictum velit egestas malesuada.
+          Saralz Collection was founded by a young african woman who hails from
+          Edo State, Nigeria. Her main passion is creating wears and accessories
+          with african prints. The brand has been existing as a small scale
+          business but was officially launched in 2022.
         </SmallText>
-        <Button>Read more</Button>
+        <Link to="/about">
+          <Button>Read more</Button>
+        </Link>
       </Detail>
     </div>
   );

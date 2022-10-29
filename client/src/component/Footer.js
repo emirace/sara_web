@@ -44,9 +44,10 @@ export default function Footer() {
         <Col>
           <Logo>SARAH</Logo>
           <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-            eget ultricies felis, sed posuere orci. Donec metus lectus,
-            fringilla id dignissim non, pulvinar sed ni
+            Saralz Collection was founded by a young african woman who hails
+            from Edo State, Nigeria. Her main passion is creating wears and
+            accessories with african prints. The brand has been existing as a
+            small scale business but was officially launched in 2022.
           </Text>
         </Col>
         <Col>

@@ -155,6 +155,7 @@ export default function AddImagePage() {
       </Title>
       <Section>
         <ImageRow style={{ display: "flex" }}>
+          {console.log(image, ...images)}
           {[image, ...images].map((img) => {
             if (img) {
               return <Image src={img} alt="img" />;
@@ -182,7 +183,13 @@ export default function AddImagePage() {
           </div>
         </Row>
 
-        <Submit onClick={submit}>{loading && <LoadingBox />} Upload</Submit>
+        <Submit onClick={submit}>
+          {loading ? (
+            <LoadingBox comn="inline" type="bubbles" height={20} width={20} />
+          ) : (
+            "UPload"
+          )}
+        </Submit>
       </Section>
     </Container>
   );

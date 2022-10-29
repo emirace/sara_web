@@ -8,34 +8,24 @@ import { Store } from "../Store";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
+import ImagrModel from "../component/ImagrModel";
 
 const Container = styled.div`
   padding: 5vw;
 `;
 const Content = styled.div`
-  -webkit-column-count: 4;
-  -moz-column-count: 4;
-  column-count: 4;
-  -webkit-column-width: 25%;
-  -moz-column-width: 25%;
-  column-width: 25%;
-  padding: 0 12px;
-  @media (max-width: 991px) {
-    -webkit-column-count: 3;
-    -moz-column-count: 3;
-    column-count: 3;
-  }
-  @media (max-width: 480px) {
-    -webkit-column-count: 1;
-    -moz-column-count: 1;
-    column-count: 1;
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 20px;
+  padding-bottom: 50px;
+  border-bottom: 1px solid;
 `;
 const Image = styled.img`
   width: 100%;
+  height: 400px;
+  object-fit: cover;
 `;
 const ImageCont = styled.div`
-  position: relative;
   -webkit-transition: all 350ms ease;
   transition: all 350ms ease;
   cursor: pointer;
@@ -159,9 +149,10 @@ export default function Catalogue() {
         ) : (
           catalogues.map((x) => (
             <ImageCont key={x.key}>
+              {console.log(x)}
               <Image src={x.image} alt="img" />
               <ButtonCont>
-                <IconCont onClick={() => handleZoom(x.image)}>
+                <IconCont onClick={() => handleZoom([x.image, ...x.images])}>
                   <IoSearchOutline />
                 </IconCont>
                 <Request onClick={() => bookoutfit(x)}>BOOK OUTFIT</Request>
@@ -170,9 +161,10 @@ export default function Catalogue() {
           ))
         )}
         <Model showModel={showModel} setShowModel={setShowModel}>
-          <ModelImgCont>
+          <ImagrModel images={zoomImg} />
+          {/* <ModelImgCont>
             <ModelImg src={zoomImg} alt="img" />
-          </ModelImgCont>
+          </ModelImgCont> */}
         </Model>
       </Content>
     </Container>

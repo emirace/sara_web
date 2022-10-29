@@ -20,6 +20,9 @@ import { Store } from "../Store";
 const Container = styled.div`
   padding: 0 5vw;
   background: ${color.background2};
+  & a {
+    cursor: pointer;
+  }
   @media (max-width: 500px) {
     padding: 0 0;
   }
@@ -156,6 +159,7 @@ const Badge = styled.div`
 
 const Logo = styled.img`
   height: 100px;
+  cursor: pointer;
   @media (max-width: 500px) {
     display: none;
   }
@@ -163,6 +167,7 @@ const Logo = styled.img`
 
 const LogoM = styled.img`
   height: 70px;
+  cursor: pointer;
   display: none;
   @media (max-width: 500px) {
     display: block;

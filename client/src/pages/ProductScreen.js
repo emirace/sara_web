@@ -5,6 +5,7 @@ import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
+import { discountPrice } from "../utils/utils";
 
 const Container = styled.div`
   padding: 0 5vw;
@@ -163,17 +164,15 @@ export default function ProductScreen() {
           <Name>{product.name}</Name>
           <div style={{ display: "flex", alignItems: "center" }}>
             <Price>
-              {location === "NG"
-                ? `NGN ${
-                    (Number(100 - product.discount) / 100) *
-                    Number(product.priceNigeria)
-                  }`
-                : `${product.currency}
-              ${
-                (Number(100 - product.discount) / 100) * Number(product.price)
-              }`}
+              {location === "NG" ? "NGN" : "EUR"}
+              {discountPrice(product, location)}
             </Price>
-            {product.discount && <Discount>{product.price}</Discount>}
+            {product.discount && (
+              <Discount>
+                {location === "NG" ? "NGN" : "EUR"}
+                {location === "NG" ? product.priceNigeria : product.price}
+              </Discount>
+            )}
             {product.discount && (
               <div style={{ marginBottom: "20px" }}>({product.discount}%)</div>
             )}

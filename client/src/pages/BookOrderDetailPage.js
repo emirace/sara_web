@@ -109,7 +109,7 @@ export default function BookOrderDetailPage() {
     <div>{error}</div>
   ) : (
     <Container>
-      <Headers>ORDER DEATAILS</Headers>
+      <Headers>ORDER DETAILS</Headers>
       <Section>
         <Key>Order number {order._id}</Key>
 
@@ -190,6 +190,10 @@ export default function BookOrderDetailPage() {
             <Row>
               <Key1>Country</Key1>
               <Value>{order.deliveryAddress.country} </Value>
+            </Row>
+            <Row>
+              <Key1>Phone</Key1>
+              <Value>{order.deliveryAddress.phone} </Value>
             </Row>
           </Section>
         </div>
