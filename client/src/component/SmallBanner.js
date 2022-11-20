@@ -17,7 +17,7 @@ const BigText = styled.div`
   font-size: 35px;
   font-weight: 200;
   color: white;
-  text-shadow: #000 1px 0 10px;
+  text-shadow: 4px 4px 4px rgba(0, 0, 0, 1);
 `;
 const SmallText = styled.div`
   color: white;

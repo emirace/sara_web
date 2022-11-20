@@ -72,7 +72,10 @@ const Row = styled.div`
 export default function Newslatter() {
   return (
     <div style={{ position: "relative" }}>
-      <Image src="/images/news.jpg" alt="" />
+      <Image
+        src="https://res.cloudinary.com/emirace/image/upload/v1668884159/IMG-20221114-WA0033_owijje.jpg"
+        alt="image"
+      />
       <Detail>
         <Text>Get Update of Lattest Product</Text>
         <SmallText>

@@ -106,7 +106,7 @@ export default function MobileMenu() {
               <div>CASUAL</div> <BiChevronRight />
             </Li>
           </Link>
-          <Link to="/corperate">
+          <Link to="/corporate">
             <Li onClick={() => setShowMenu(false)}>
               <div>COROPERATE</div> <BiChevronRight />
             </Li>
@@ -116,7 +116,7 @@ export default function MobileMenu() {
               <div>OWAMBE</div> <BiChevronRight />
             </Li>
           </Link>
-          <Link to="/accesories">
+          <Link to="/accessories">
             <Li onClick={() => setShowMenu(false)}>
               <div>ACCESORIES</div> <BiChevronRight />
             </Li>
