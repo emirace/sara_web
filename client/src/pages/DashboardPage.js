@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import Profile from "../component/dashboard/Profile";
 import { BsImages } from "react-icons/bs";
@@ -13,6 +13,7 @@ import CatalogueList from "../component/dashboard/CatalogueList";
 import GalleryList from "../component/dashboard/GalleryList";
 import OrderList from "../component/dashboard/OrderList";
 import BookOrderList from "../component/dashboard/BookOrderList";
+import { Store } from "../Store";
 
 const Container = styled.div`
   display: flex;
@@ -61,6 +62,7 @@ const Logout = styled.div`
   }
 `;
 export default function DashboardPage() {
+  const { dispatch: ctxDispatch } = useContext(Store);
   const [tab, setTab] = useState("profile");
   const [showMobileMenu, setShowMobileMenu] = useState(true);
 
@@ -82,6 +84,12 @@ export default function DashboardPage() {
       default:
         break;
     }
+  };
+
+  const logout = () => {
+    console.log("hello");
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
   };
 
   return (
@@ -144,7 +152,7 @@ export default function DashboardPage() {
         <Option>
           <BiSupport /> Supports
         </Option>
-        <Logout>Logout</Logout>
+        <Logout onClick={logout}>Logout</Logout>
       </Sidebar>
       <Content showMobileMenu={showMobileMenu}>{displayTab(tab)}</Content>
     </Container>
