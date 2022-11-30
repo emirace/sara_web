@@ -1,9 +1,10 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
+import { resizeImage } from "../component/ResizeImage";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 
@@ -23,7 +24,7 @@ const Section = styled.div`
 
 const Upload = styled.label`
   width: 250px;
-  height: 500px;
+  height: 400px;
   border: 1px dashed ${color.main};
   display: flex;
   flex-direction: column;
@@ -37,7 +38,7 @@ const Upload = styled.label`
 const Image = styled.img`
   margin-right: 10px;
   width: 250px;
-  height: 500px;
+  height: 400px;
   object-fit: cover;
 `;
 
@@ -102,7 +103,7 @@ export default function AddImagePage() {
   const [loadingImage, setLoadingImage] = useState(false);
   const uploadImage = async (e) => {
     setLoadingImage(true);
-    const file = e.target.files[0];
+    const file = e;
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -148,6 +149,25 @@ export default function AddImagePage() {
     }
   };
 
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage1 = () => {
+      console.log("file", invalidImage, resizeImage1);
+      if (!invalidImage && resizeImage1.filepreview) {
+        uploadImage(resizeImage1.file);
+      }
+    };
+    uploadImage1();
+  }, [resizeImage1]);
+  const handleResize = (e) => {
+    console.log("hello");
+    resizeImage(e, setInvalidImage, setResizeImage);
+  };
+
   return (
     <Container>
       <Title>
@@ -167,13 +187,16 @@ export default function AddImagePage() {
             <Upload htmlFor="uploadstyle">
               <AiOutlinePicture />
               <div>Add photo</div>
+              {invalidImage && (
+                <div style={{ color: "red" }}>{invalidImage}</div>
+              )}
             </Upload>
           )}
           <input
             style={{ display: "none" }}
             type="file"
             id="uploadstyle"
-            onChange={(e) => uploadImage(e)}
+            onChange={(e) => handleResize(e)}
           />
         </ImageRow>
         <Row>

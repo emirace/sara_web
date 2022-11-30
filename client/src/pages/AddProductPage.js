@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiOutlinePicture } from "react-icons/ai";
 import Select from "react-select";
 import styled from "styled-components";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { Store } from "../Store";
 import LoadingBox from "../component/LoadingBox";
 import { useNavigate } from "react-router-dom";
+import { resizeImage } from "../component/ResizeImage";
 
 const Container = styled.div`
   padding: 5vw;
@@ -212,7 +213,8 @@ export default function AddProductPage() {
   const [loadingImage, setLoadingImage] = useState(false);
   const uploadImage = async (e) => {
     setLoadingImage(true);
-    const file = e.target.files[0];
+    const file = e;
+
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -228,7 +230,26 @@ export default function AddProductPage() {
         setImages((prev) => [...prev, data.secure_url]);
       }
       setLoadingImage(false);
-    } catch (err) {}
+    } catch (err) {
+      setLoadingImage(false);
+    }
+  };
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage1 = () => {
+      console.log("file", invalidImage, resizeImage1);
+      if (!invalidImage && resizeImage1.filepreview) {
+        uploadImage(resizeImage1.file);
+      }
+    };
+    uploadImage1();
+  }, [resizeImage1]);
+  const handleResize = (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
   };
 
   return (
@@ -249,6 +270,9 @@ export default function AddProductPage() {
                   <Upload htmlFor="uploadstyle">
                     <AiOutlinePicture />
                     <div>Add photo</div>
+                    {invalidImage && (
+                      <div style={{ color: "red" }}>{invalidImage}</div>
+                    )}
                   </Upload>
                 )}
               </div>
@@ -256,7 +280,7 @@ export default function AddProductPage() {
                 style={{ display: "none" }}
                 type="file"
                 id="uploadstyle"
-                onChange={(e) => uploadImage(e)}
+                onChange={(e) => handleResize(e)}
               />
             </Content>
           </Section>
