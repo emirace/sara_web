@@ -292,8 +292,9 @@ export default function AddProductPage() {
                 <div style={{ width: "100%" }}>
                   <Select
                     options={categories}
+                    isMulti
                     styles={colorStyles}
-                    onChange={(e) => setCategory(e.value)}
+                    onChange={(e) => setCategory(e)}
                   />
                 </div>
               </Row>

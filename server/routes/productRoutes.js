@@ -126,13 +126,23 @@ productRouter.get(
   "/:category/:location",
   expressAsyncHandler(async (req, res) => {
     const { category, location } = req.params;
+    console.log(category);
     const locationFilter =
       location === "NG"
         ? {
             isNigeria: true,
           }
         : {};
-    const products = await Product.find({ category, ...locationFilter }).sort({
+    const products = await Product.find({
+      category: {
+        $elemMatch: {
+          value: {
+            $in: [category],
+          },
+        },
+      },
+      ...locationFilter,
+    }).sort({
       createdAt: -1,
     });
     res.send({

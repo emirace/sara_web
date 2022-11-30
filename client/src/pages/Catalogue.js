@@ -19,11 +19,18 @@ const Content = styled.div`
   grid-gap: 20px;
   padding-bottom: 50px;
   border-bottom: 1px solid;
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 5px;
+  }
 `;
 const Image = styled.img`
   width: 100%;
   height: 400px;
   object-fit: cover;
+  @media (max-width: 992px) {
+    height: 300px;
+  }
 `;
 const ImageCont = styled.div`
   -webkit-transition: all 350ms ease;
@@ -57,6 +64,12 @@ const IconCont = styled.div`
   &:hover svg {
     color: ${color.main};
   }
+  @media (max-width: 992px) {
+    width: 30px;
+    & svg {
+      font-size: 16px;
+    }
+  }
 `;
 const Request = styled.div`
   /* position: absolute;
@@ -77,6 +90,10 @@ const Request = styled.div`
   &:hover {
     background: #fff;
     color: ${color.main};
+  }
+  @media (max-width: 992px) {
+    font-size: 14px;
+    height: 30px;
   }
 `;
 const ModelImgCont = styled.div`

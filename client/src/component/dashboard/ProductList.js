@@ -241,7 +241,7 @@ export default function ProductList({ setShowMobileMenu }) {
             <Trow>
               <Tdata>{product._id}</Tdata>
               <Tdata>{product.name}</Tdata>
-              <Tdata>{product.category}</Tdata>
+              <Tdata>{product.category.map((c) => c.value + ", ")}</Tdata>
               <Tdata>
                 {product.currency}
                 {product.price}

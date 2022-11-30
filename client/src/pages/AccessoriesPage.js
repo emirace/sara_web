@@ -15,6 +15,12 @@ const Container = styled.div`
 const Category = styled.div`
   display: flex;
   padding: 50px 0;
+  overflow-x: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const Item = styled.div`
   border: 1px solid;
@@ -37,6 +43,10 @@ const Content = styled.div`
   grid-gap: 30px;
   padding-bottom: 50px;
   border-bottom: 1px solid;
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 5px;
+  }
 `;
 
 export default function AccessoriesPage() {

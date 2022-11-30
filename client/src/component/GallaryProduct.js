@@ -25,6 +25,9 @@ const Image = styled.img`
   width: 100%;
   height: 400px;
   object-fit: cover;
+  @media (max-width: 992px) {
+    height: 300px;
+  }
 `;
 const IconCont = styled.div`
   display: flex;
@@ -61,6 +64,12 @@ const Icon = styled.div`
   }
   &:hover svg {
     color: ${color.main};
+  }
+
+  @media (max-width: 992px) {
+    & svg {
+      font-size: 16px;
+    }
   }
 `;
 

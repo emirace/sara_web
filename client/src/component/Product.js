@@ -17,6 +17,9 @@ const Image = styled.img`
   width: 100%;
   height: 400px;
   object-fit: cover;
+  @media (max-width: 992px) {
+    height: 300px;
+  }
 `;
 const Text = styled.div`
   padding: 10px;
@@ -61,6 +64,13 @@ const IconCont = styled.div`
   &:hover svg {
     color: ${color.main};
   }
+
+  @media (max-width: 992px) {
+    width: 30px;
+    & svg {
+      font-size: 16px;
+    }
+  }
 `;
 const Request = styled.div`
   /* position: absolute;
@@ -81,6 +91,11 @@ const Request = styled.div`
   &:hover {
     background: #fff;
     color: ${color.main};
+  }
+
+  @media (max-width: 992px) {
+    font-size: 14px;
+    height: 30px;
   }
 `;
 const ModelImg = styled.img`
