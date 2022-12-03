@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
 import { color } from "../constant/parameters";
@@ -105,7 +105,13 @@ const Discount = styled.div`
   margin: 0 30px;
   margin-bottom: 20px;
 `;
-
+const Cat = styled.div`
+  border: 1px solid ${color.main};
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  color: ${color.main};
+`;
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -196,7 +202,19 @@ export default function ProductScreen() {
           <Description>Materials:</Description>
           <p style={{ marginTop: "5px" }}>{product.material}</p>
           <Description>Category:</Description>
-          <p style={{ marginTop: "5px" }}>{product.category}</p>
+          <p
+            style={{
+              marginTop: "5px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              flexWrap: "wrap",
+            }}
+          >
+            {product.category.map((cat) => (
+              <Cat>{cat.value}</Cat>
+            ))}
+          </p>
           <div style={{ width: "70%" }}>
             <Description>Deatails and fit:</Description>
             <ul style={{ marginTop: "5px" }}>
