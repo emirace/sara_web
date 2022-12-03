@@ -143,7 +143,7 @@ export default function CartPage() {
   const { cart, location } = state;
   const navigate = useNavigate();
   const removeItem = (product) => {
-    if (window.confirm("Are you sure to delete")) {
+    if (window.confirm("Are you sure you want to remove item from cart")) {
       ctxDispatch({ type: "REMOVE_CART_ITEM", payload: product });
     }
   };
