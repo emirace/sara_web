@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useContext, useEffect, useReducer } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
+import SliderMobile from "../component/SliderMobile";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 import { discountPrice } from "../utils/utils";
@@ -20,10 +21,13 @@ const Content = styled.div`
   }
 `;
 const Col = styled.div`
-  flex: 1;
+  flex: 3;
   padding: 20px;
   @media (max-width: 500px) {
     padding: 10px;
+    &.desktop {
+      display: none;
+    }
   }
 `;
 const Col1 = styled.div`
@@ -35,10 +39,10 @@ const Col1 = styled.div`
 `;
 const Image = styled.img`
   width: 100%;
-  height: 700px;
   object-fit: cover;
   @media (max-width: 500px) {
     height: 500px;
+    display: none;
   }
 `;
 const Name = styled.div`
@@ -104,6 +108,9 @@ const Discount = styled.div`
   text-decoration: line-through;
   margin: 0 30px;
   margin-bottom: 20px;
+  @media (max-width: 992px) {
+    margin: 0 20px 20px;
+  }
 `;
 const Cat = styled.div`
   border: 1px solid ${color.main};
@@ -111,6 +118,21 @@ const Cat = styled.div`
   justify-content: center;
   padding: 5px;
   color: ${color.main};
+`;
+const SmallImg = styled.img`
+  width: 100px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  &.active {
+    border: 1px solid ${color.main};
+  }
+`;
+const ImgCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
 `;
 const reducer = (state, action) => {
   switch (action.type) {
@@ -134,6 +156,7 @@ export default function ProductScreen() {
     loading: true,
     error: "",
   });
+  const [selectedImage, setSelectedImage] = useState("");
   useEffect(() => {
     const getProduct = async () => {
       dispatch({ type: "FETCH_REQUEST" });
@@ -141,6 +164,8 @@ export default function ProductScreen() {
         const { data } = await axios.get(`/api/products/product/${slug}`);
         if (data.success) {
           dispatch({ type: "FETCH_SUCCESS", payload: data.product });
+          console.log(data);
+          setSelectedImage(data.product.image);
         } else {
           dispatch({ type: "FETCH_FAIL", payload: data.message });
         }
@@ -163,8 +188,23 @@ export default function ProductScreen() {
   ) : (
     <Container>
       <Content>
+        <Col className="desktop" style={{ flex: 1 }}>
+          {" "}
+          <ImgCont>
+            {console.log(selectedImage)}
+            {[product.image, ...product.images].map((img) => (
+              <SmallImg
+                onClick={() => setSelectedImage(img)}
+                key={img}
+                src={img}
+                className={selectedImage === img ? "active" : ""}
+              />
+            ))}{" "}
+          </ImgCont>
+        </Col>
         <Col>
-          <Image src={`${product.image}`} alt="img" />
+          <Image src={selectedImage} alt="img" />
+          <SliderMobile images={[product.image, ...product.images]} />
         </Col>
         <Col1>
           <Name>{product.name}</Name>
@@ -176,7 +216,9 @@ export default function ProductScreen() {
             {product.discount && (
               <Discount>
                 {location === "NG" ? "NGN" : "EUR"}
-                {location === "NG" ? product.priceNigeria : product.price}
+                {location === "NG"
+                  ? product.priceNigeria.toFixed(2)
+                  : product.price.toFixed(2)}
               </Discount>
             )}
             {product.discount && (
@@ -199,9 +241,9 @@ export default function ProductScreen() {
             ADD TO CART
           </CheckOutButton>
 
-          <Description>Materials:</Description>
+          <Description>Materials</Description>
           <p style={{ marginTop: "5px" }}>{product.material}</p>
-          <Description>Category:</Description>
+          <Description>Category</Description>
           <p
             style={{
               marginTop: "5px",
@@ -217,12 +259,7 @@ export default function ProductScreen() {
           </p>
           <div style={{ width: "70%" }}>
             <Description>Deatails and fit:</Description>
-            <ul style={{ marginTop: "5px" }}>
-              <li>green col1Col1or</li>
-              <li>green color</li>
-              <li>green color</li>
-              <li>green color</li>
-            </ul>
+            <p>{product.description}</p>
           </div>
         </Col1>
       </Content>

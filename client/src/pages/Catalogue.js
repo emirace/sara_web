@@ -9,6 +9,7 @@ import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import ImagrModel from "../component/ImagrModel";
+import SliderMobile from "../component/SliderMobile";
 
 const Container = styled.div`
   padding: 5vw;
@@ -179,6 +180,8 @@ export default function Catalogue() {
         )}
         <Model showModel={showModel} setShowModel={setShowModel}>
           <ImagrModel images={zoomImg} />
+
+          <SliderMobile images={zoomImg} />
           {/* <ModelImgCont>
             <ModelImg src={zoomImg} alt="img" />
           </ModelImgCont> */}

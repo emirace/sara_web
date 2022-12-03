@@ -5,6 +5,6 @@ export function getCartTotalPrice(cart, location) {
 
 export const discountPrice = (c, location) => {
   return location === "NG"
-    ? (Number(100 - c.discount) / 100) * c.priceNigeria
-    : (Number(100 - c.discount) / 100) * c.price;
+    ? ((Number(100 - c.discount) / 100) * c.priceNigeria).toFixed(2)
+    : ((Number(100 - c.discount) / 100) * c.price).toFixed(2);
 };

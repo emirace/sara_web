@@ -197,7 +197,7 @@ export default function DeliveryPage() {
   }, []);
 
   const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
+    setInput((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Store } from "../Store";
 import { AiOutlineClose } from "react-icons/ai";
+import { color } from "../constant/parameters";
 
 const Background = styled.div`
   width: 100%;
@@ -51,10 +52,15 @@ const CloseModelButton = styled.div`
   position: absolute;
   top: 20px;
   right: 20px;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
   padding: 0;
   z-index: 10;
+  background: ${color.border};
 `;
 export default function Model({ showModel, setShowModel, children }) {
   const modelRef = useRef();

@@ -4,6 +4,7 @@ import { AiOutlinePicture } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LoadingBox from "../component/LoadingBox";
+import { resizeImage } from "../component/ResizeImage";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 
@@ -196,15 +197,15 @@ export default function BookDeliveryPage() {
   }, []);
 
   const handleOnChange = (text, input) => {
-    setInput((prevState) => ({ ...prevState, [input]: text.trim() }));
+    setInput((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleError = (errorMessage, input) => {
     setError((prevState) => ({ ...prevState, [input]: errorMessage }));
   };
 
-  const handleUpload = async (e) => {
+  const uploadImage = async (e) => {
     setLoadingImage(true);
-    const file = e.target.files[0];
+    const file = e;
     const bodyFormData = new FormData();
     bodyFormData.append("file", file);
     try {
@@ -219,6 +220,24 @@ export default function BookDeliveryPage() {
       setLoadingImage(false);
       handleError("Error uploading image, try again", "proof");
     }
+  };
+
+  const [invalidImage, setInvalidImage] = useState("");
+  const [resizeImage1, setResizeImage] = useState({
+    file: [],
+    filepreview: null,
+  });
+  useEffect(() => {
+    const uploadImage1 = () => {
+      console.log("file", invalidImage, resizeImage1);
+      if (!invalidImage && resizeImage1.filepreview) {
+        uploadImage(resizeImage1.file);
+      }
+    };
+    uploadImage1();
+  }, [resizeImage1]);
+  const handleResize = (e) => {
+    resizeImage(e, setInvalidImage, setResizeImage);
   };
 
   const handlebuyer = () => {
@@ -491,7 +510,7 @@ export default function BookDeliveryPage() {
                     type="file"
                     id="receipt"
                     style={{ display: "none" }}
-                    onChange={(e) => handleUpload(e)}
+                    onChange={(e) => handleResize(e)}
                   />
                 </OptionCont>
 

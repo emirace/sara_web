@@ -9,6 +9,10 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-gap: 30px;
+  @media (max-width: 992px) {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 5px;
+  }
 `;
 export default function ProductList() {
   const { state } = useContext(Store);

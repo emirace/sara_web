@@ -5,9 +5,15 @@ import { color } from "../constant/parameters";
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @media (max-width: 992px) {
+    display: none;
+  }
 `;
 const Image = styled.img`
-  width: 100%;
+  height: 100%;
 `;
 const SImage = styled.img`
   width: 100px;
@@ -33,7 +39,6 @@ const Row = styled.div`
 
 export default function ImagrModel({ images }) {
   const [currentImage, setCurrentImage] = useState(images[0]);
-  console.log(images);
   return (
     <Container>
       <Image src={currentImage} alt="img" />

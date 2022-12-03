@@ -1,15 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
 import { IoSearchOutline } from "react-icons/io5";
 import { AiOutlineShopping } from "react-icons/ai";
 import { Store } from "../Store";
 import { Link } from "react-router-dom";
+import Model from "./Model";
+import SliderMobile from "./SliderMobile";
+import ImagrModel from "./ImagrModel";
 
 const Product = styled.div`
   width: 100%;
   position: relative;
-  cursor: pointer;
   &:hover .icons {
     opacity: 0.2;
   }
@@ -30,6 +32,7 @@ const Image = styled.img`
   }
 `;
 const IconCont = styled.div`
+  position: relative;
   display: flex;
   position: absolute;
   left: 50%;
@@ -41,7 +44,7 @@ const Blur = styled.div`
   position: absolute;
   left: 0;
   top: 0;
-  background: red;
+  background: ${color.main};
   width: 100%;
   transition: all 0.3s ease-in;
   height: 100%;
@@ -54,6 +57,7 @@ const Icon = styled.div`
   padding: 10px;
   margin: 2px;
   cursor: pointer;
+  z-index: 5;
   opacity: 0;
   & svg {
     font-size: 20px;
@@ -85,24 +89,30 @@ const Name = styled.div`
 `;
 export default function GallaryProduct({ product }) {
   const { dispatch: ctxDispatch } = useContext(Store);
+  const [showModel, setShowModel] = useState(false);
+
   const addToCart = (product) => {
     ctxDispatch({ type: "ADD_TO_CART", payload: product });
   };
   return (
     <Product>
       <Image src={`${product.image}`} alt="img" />
-      <Name className="name">{product.name}</Name>
       <Link to={`/product/${product.slug}`}>
-        <Blur className="icons" />
+        <Name className="name">{product.name}</Name>
       </Link>
       <IconCont>
-        <Icon className="icon">
+        <Icon className="icon" onClick={() => setShowModel(true)}>
           <IoSearchOutline />
         </Icon>
-        <Icon className="icon">
-          <AiOutlineShopping onClick={() => addToCart(product)} />
+        <Icon onClick={() => addToCart(product)} className="icon">
+          <AiOutlineShopping />
         </Icon>
+        <Blur className="icons" />
       </IconCont>
+      <Model setShowModel={setShowModel} showModel={showModel}>
+        <SliderMobile images={[product.image, ...product.images]} />
+        <ImagrModel images={[product.image, ...product.images]} />
+      </Model>
     </Product>
   );
 }
