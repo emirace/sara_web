@@ -71,11 +71,7 @@ orderRouter.put(
   expressAsyncHandler(async (req, res) => {
     const order = await Order.findById(req.params.id);
     if (order) {
-      order.cartItems = req.body.cartItems || order.cartItems;
-      order.deliveryAddress = req.body.deliveryAddress || order.deliveryAddress;
-      order.buyer = req.body.buyer || order.buyer;
-      order.totalPrice = req.body.totalPrice || order.totalPrice;
-      order.proof = req.body.proof || order.proof;
+      order.status = req.body.status;
 
       const newOrder = await order.save();
 

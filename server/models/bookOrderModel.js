@@ -31,6 +31,7 @@ const bookOrderSchema = new mongoose.Schema(
     gender: { type: String, require: true },
     measurement: { type: Object, require: true },
     proof: { type: String, require: true },
+    status: { type: String, default: "Proccessing" },
   },
   {
     timestamps: true,

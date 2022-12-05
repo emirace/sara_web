@@ -77,18 +77,7 @@ bookOrderRouter.put(
   expressAsyncHandler(async (req, res) => {
     const bookOrder = await BookOrder.findById(req.params.id);
     if (bookOrder) {
-      bookOrder.galleryId = req.body.galleryId || bookOrder.galleryId;
-      bookOrder.catalogueId = req.body.catalogueId || bookOrder.catalogueId;
-      bookOrder.style = req.body.style || bookOrder.style;
-      bookOrder.styleType = req.body.styleType || bookOrder.styleType;
-      bookOrder.fabricChioce = req.body.fabricChioce || bookOrder.fabricChioce;
-      bookOrder.deliveryAddress =
-        req.body.deliveryAddress || bookOrder.deliveryAddress;
-      bookOrder.unit = req.body.unit || bookOrder.unit;
-      bookOrder.buyer = req.body.buyer || bookOrder.buyer;
-      bookOrder.gender = req.body.gender || bookOrder.gender;
-      bookOrder.measurement = req.body.measurement || bookOrder.measurement;
-      bookOrder.proof = req.body.proof || bookOrder.proof;
+      bookOrder.status = req.body.status;
 
       const newBookOrder = await bookOrder.save();
 

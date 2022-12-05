@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
 
@@ -11,13 +12,11 @@ const Container = styled.div`
     opacity: 0.8;
     height: 240px;
   }
-  &:hover {
-    cursor: pointer;
-  }
 `;
 const Image = styled.img`
   object-fit: cover;
   height: 100%;
+  width: 100%;
 `;
 const Details = styled.div`
   position: absolute;
@@ -31,6 +30,7 @@ const Details = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 `;
 const Content = styled.span`
   color: white;
@@ -43,6 +43,7 @@ const Name = styled.span`
   font-size: 30px;
   font-weight: 200;
   margin: 20px 0;
+  text-align: center;
 `;
 const Detail = styled.span`
   margin: 10px;
@@ -54,7 +55,8 @@ const Key = styled.span`
   font-weight: bold;
 `;
 const Value = styled.span``;
-export default function SlideItem({ image }) {
+export default function SlideItem({ product }) {
+  const navigate = useNavigate();
   const detail = (key, value) => {
     return (
       <Detail>
@@ -65,14 +67,12 @@ export default function SlideItem({ image }) {
   };
   return (
     <Container>
-      <Image src={image} alt="img" />
-      <Details>
-        <Name>NAME</Name>
+      <Image src={product.image} alt="img" />
+      <Details onClick={() => navigate(`/product/${product.slug}`)}>
+        <Name>{product.name}</Name>
         <Content>
-          {detail("Size", "36")}
-          {detail("Size", "36")}
-          {detail("Size", "36")}
-          {detail("Size", "36")}
+          {detail("Size", product.size[0].value)}
+          {detail("Category", product.category[0].value)}
         </Content>
       </Details>
     </Container>

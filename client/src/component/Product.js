@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Model from "./Model";
 import { Store } from "../Store";
 import ImagrModel from "./ImagrModel";
+import SliderMobile from "./SliderMobile";
 
 const Container = styled.div`
   position: relative;
@@ -124,7 +125,7 @@ export default function Product({ product }) {
       </ButtonCont>
       <Model showModel={showModel} setShowModel={setShowModel}>
         <ImagrModel images={[product.image, ...product.images]} />
-        {/* <ModelImg src={product.image} alt="img" /> */}
+        <SliderMobile images={[product.image, ...product.images]} />
       </Model>
     </Container>
   );

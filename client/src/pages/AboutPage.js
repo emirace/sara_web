@@ -15,12 +15,18 @@ const Container = styled.div`
   height: 100%;
   margin: 30px 10vw;
   background: ${color.background2};
+  @media (max-width: 992px) {
+    margin: 30px 5vw;
+  }
 `;
 const Col = styled.div`
   flex: 1;
 `;
 const Row = styled.div`
   display: flex;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
 `;
 const RowItem = styled.div`
   display: flex;
@@ -35,13 +41,22 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  @media (max-width: 992px) {
+    display: none;
+  }
 `;
 const Title = styled.div`
   font-weight: 200;
   font-size: 50px;
+  @media (max-width: 992px) {
+    font-size: 35px;
+  }
 `;
 const Detail = styled.div`
   padding: 30px;
+  @media (max-width: 992px) {
+    padding: 10px;
+  }
 `;
 
 const Social = styled.div`
@@ -64,11 +79,21 @@ export default function AboutPage() {
         <Col>
           <Detail>
             <Title>About Us</Title>
-            <p>
-              Saralz Collection was founded by a young african woman who hails
-              from Edo State, Nigeria. Her main passion is creating wears and
-              accessories with african prints. The brand has been existing as a
-              small scale business but was officially launched in 2022.
+            <p style={{ textAlign: "justify" }}>
+              Saralz is a clothing brand with an initiative to partner with
+              creative minds with the aim of bringing the richness, beauty and
+              value of African culture to other parts of the world. We display
+              the vast use of African prints (popularly known as Ankara) to
+              create and design pieces ranging from casual wears, corporate
+              wears, party wears, mufflers, footwears, bags and accessories. The
+              brand is also keen on preserving the conventional method that
+              function in African tailor shop by availing to customers the
+              possibility to book desired wears with required measurements to
+              fit. We offer custom made outfits for your special occasions:
+              wedding Guest(both sophisticated and simple Asoebi dresses), prom
+              dresses, red carpet dresses, dinner dresses. Our outfit caters for
+              both male and female demand. We also sell ready to wear handmade
+              African clothing and accessories.
             </p>
 
             <div>

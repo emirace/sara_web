@@ -77,10 +77,18 @@ const Address = styled.div`
     margin-left: 0;
   }
 `;
+
+const StatusCont = styled.div`
+  display: flex;
+  gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
+`;
 export default function OrderDetailPage() {
   const { id: orderId } = useParams();
   const { state } = useContext(Store);
-  const { location } = state;
+  const { location, userInfo } = state;
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -101,6 +109,24 @@ export default function OrderDetailPage() {
     };
     getOrder();
   }, [orderId]);
+
+  const updateStatus = async () => {
+    try {
+      const { data } = await axios.put(
+        `/api/orders/${order._id}`,
+        { status: "Order Confirm" },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      if (data.success) {
+        setOrder(data.order);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return loading ? (
     <LoadingBox />
   ) : error ? (
@@ -119,9 +145,10 @@ export default function OrderDetailPage() {
       </Section>
       <Title>ITEMS IN YOUR ORDER</Title>
       <Section>
-        <div>
-          <Status>Proccessing</Status>
-        </div>
+        <StatusCont>
+          <Status>{order.status}</Status>
+          <Button onClick={updateStatus}>Confirm Order</Button>
+        </StatusCont>
         <Key>
           On {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}
         </Key>
@@ -139,12 +166,15 @@ export default function OrderDetailPage() {
                   </Link>
                   <Key>
                     {location === "NG"
-                      ? `NGN ${
+                      ? `NGN ${(
                           (Number(100 - item.discount) / 100) *
                           Number(item.priceNigeria)
-                        }`
+                        ).toFixed(2)}`
                       : `${item.currency}
-              ${(Number(100 - item.discount) / 100) * Number(item.price)}`}
+              ${(
+                (Number(100 - item.discount) / 100) *
+                Number(item.price)
+              ).toFixed(2)}`}
                   </Key>
                 </Details>
               </Row>

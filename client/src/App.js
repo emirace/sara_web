@@ -30,6 +30,8 @@ import AllProductPage from "./pages/AllProductPage";
 import axios from "axios";
 import AboutPage from "./pages/AboutPage";
 import CatalogueScreen from "./pages/CaralogueScreen";
+import EditProductPage from "./pages/EditProductPage";
+import ScrollToTop from "./component/ScrollToTop";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -53,60 +55,70 @@ export default function App() {
   return (
     <Container mode={mode}>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="gallery" element={<GalleryScreen />} />
-        <Route path="product/:slug" element={<ProductScreen />} />
-        <Route path="catalogue" element={<Catalogue />} />
-        <Route path="casual" element={<CasualPage />} />
-        <Route path="corporate" element={<CorporatePage />} />
-        <Route path="owambe" element={<OwambePage />} />
-        <Route path="accessories" element={<AccessoriesPage />} />
-        <Route path="bookorder" element={<BookOrderScreen />} />
-        <Route path="cart" element={<CartPage />} />
-        <Route path="ordercreated/:type/:id" element={<OrderSuccessPage />} />
-        <Route path="order/:id" element={<OrderDetailPage />} />
-        <Route path="bookorder/:id" element={<BookOrderDetailPage />} />
-        <Route path="catalogue/:id" element={<CatalogueScreen />} />
-        <Route path="allproduct" element={<AllProductPage />} />
-        <Route path="about" element={<AboutPage />} />
-        <Route
-          path="delivery"
-          element={
-            <CartRoute>
-              <DeliveryPage />
-            </CartRoute>
-          }
-        />
-        <Route
-          path="dashboard"
-          element={
-            <AdminRoute>
-              <DashboardPage />
-            </AdminRoute>
-          }
-        />
-        <Route path="bookdelivery" element={<BookDeliveryPage />} />
-        <Route
-          path="addproduct"
-          element={
-            <AdminRoute>
-              <AddProductPage />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="add/:type"
-          element={
-            <AdminRoute>
-              <AddImagePage />
-            </AdminRoute>
-          }
-        />
-        <Route path="search" element={<SearchPage />} />
-        <Route path="loginadmin" element={<LoginPage />} />
-        {/* <Route path="about" element={<About />} /> */}
-      </Routes>
+      <ScrollToTop>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="gallery" element={<GalleryScreen />} />
+          <Route path="product/:slug" element={<ProductScreen />} />
+          <Route path="catalogue" element={<Catalogue />} />
+          <Route path="casual" element={<CasualPage />} />
+          <Route path="corporate" element={<CorporatePage />} />
+          <Route path="owambe" element={<OwambePage />} />
+          <Route path="accessories" element={<AccessoriesPage />} />
+          <Route path="bookorder" element={<BookOrderScreen />} />
+          <Route path="cart" element={<CartPage />} />
+          <Route path="ordercreated/:type/:id" element={<OrderSuccessPage />} />
+          <Route path="order/:id" element={<OrderDetailPage />} />
+          <Route path="bookorder/:id" element={<BookOrderDetailPage />} />
+          <Route path="catalogue/:id" element={<CatalogueScreen />} />
+          <Route path="allproduct" element={<AllProductPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route
+            path="delivery"
+            element={
+              <CartRoute>
+                <DeliveryPage />
+              </CartRoute>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <AdminRoute>
+                <DashboardPage />
+              </AdminRoute>
+            }
+          />
+          <Route path="bookdelivery" element={<BookDeliveryPage />} />
+          <Route
+            path="addproduct"
+            element={
+              <AdminRoute>
+                <AddProductPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="editproduct/:slug"
+            element={
+              <AdminRoute>
+                <EditProductPage />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="add/:type"
+            element={
+              <AdminRoute>
+                <AddImagePage />
+              </AdminRoute>
+            }
+          />
+          <Route path="search" element={<SearchPage />} />
+          <Route path="loginadmin" element={<LoginPage />} />
+          {/* <Route path="about" element={<About />} /> */}
+        </Routes>
+      </ScrollToTop>
       <Footer />
     </Container>
   );

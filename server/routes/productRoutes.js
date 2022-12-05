@@ -121,6 +121,31 @@ productRouter.get(
   })
 );
 
+//get slider product
+productRouter.get(
+  "/slider/:location",
+  expressAsyncHandler(async (req, res) => {
+    const { location } = req.params;
+    const locationFilter =
+      location === "NG"
+        ? {
+            isNigeria: true,
+          }
+        : {};
+    const products = await Product.find({
+      slider: true,
+      ...locationFilter,
+    }).sort({
+      createdAt: -1,
+    });
+    res.send({
+      success: true,
+      message: "Sucessfully",
+      products,
+    });
+  })
+);
+
 // get all product category
 productRouter.get(
   "/:category/:location",
@@ -186,6 +211,7 @@ productRouter.post(
       image: req.body.image,
       images: req.body.images,
       category: req.body.category,
+      size: req.body.size,
       material: req.body.material,
       priceNigeria: req.body.priceNigeria,
       price: req.body.price,
@@ -195,6 +221,8 @@ productRouter.post(
       isNigeria: req.body.isNigeria,
       countInStock: req.body.countInStock,
       description: req.body.description,
+      detail: req.body.detail,
+      slider: req.body.slider,
     });
 
     const newProduct = await product.save();
@@ -212,13 +240,6 @@ productRouter.put(
   "/:id",
   isAuth,
   isAdmin,
-  body("name").custom((value) => {
-    return Product.find({ name: value }).then((product) => {
-      if (product) {
-        return Promise.reject("Name already in use");
-      }
-    });
-  }),
   expressAsyncHandler(async (req, res) => {
     const errors = validationResult(req);
 
@@ -236,6 +257,7 @@ productRouter.put(
       product.image = req.body.image || product.image;
       product.images = req.body.images || product.images;
       product.category = req.body.category || product.category;
+      product.size = req.body.size || product.size;
       product.material = req.body.material || product.material;
       product.price = req.body.price || product.price;
       product.priceNigeria = req.body.priceNigeria || product.priceNigeria;
@@ -245,6 +267,8 @@ productRouter.put(
       product.isNigeria = req.body.isNigeria || product.isNigeria;
       product.countInStock = req.body.countInStock || product.countInStock;
       product.description = req.body.description || product.description;
+      product.detail = req.body.detail || product.detail;
+      product.slider = req.body.slider || product.slider;
 
       const newProduct = await product.save();
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import LoadingBox from "../component/LoadingBox";
+import { Store } from "../Store";
 
 const Container = styled.div`
   padding: 5vw 10vw;
@@ -69,9 +70,24 @@ const OrderImage = styled.img`
   width: 150px;
   height: 200px;
 `;
+
+const StatusCont = styled.div`
+  display: flex;
+  gap: 20px;
+  @media (max-width: 992px) {
+    flex-direction: column;
+  }
+`;
+
+const Button = styled.div`
+  padding: 5px 7px;
+  background: ${color.main};
+  color: white;
+`;
 export default function BookOrderDetailPage() {
   const { id: orderId } = useParams();
-
+  const { state } = useContext(Store);
+  const { userInfo } = state;
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -103,6 +119,22 @@ export default function BookOrderDetailPage() {
     return images;
   };
 
+  const updateStatus = async () => {
+    try {
+      const { data } = await axios.put(
+        `/api/bookorders/${order._id}`,
+        { status: "Order Confirm" },
+        {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        }
+      );
+      if (data.success) {
+        setOrder(data.order);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return loading ? (
     <LoadingBox />
   ) : error ? (
@@ -120,7 +152,10 @@ export default function BookOrderDetailPage() {
       <Title>ORDER ITEM</Title>
       <Section>
         <div>
-          <Status>Status</Status>
+          <StatusCont>
+            <Status>{order.status}</Status>
+            <Button onClick={updateStatus}>Confirm Order</Button>
+          </StatusCont>
         </div>
         <Key>
           On {moment(order.createdAt).format("MMMM Do YYYY, h:mm:ss a")}

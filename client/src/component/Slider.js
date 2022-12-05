@@ -1,5 +1,9 @@
-import React from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { Store } from "../Store";
+import LoadingBox from "./LoadingBox";
+import MessageBox from "./MessageBox";
 import SlideItem from "./SlideItem";
 
 const Container = styled.div`
@@ -33,6 +37,33 @@ const Content = styled.div`
   }
 `;
 export default function Slider() {
+  const { state } = useContext(Store);
+  const { location, userInfo } = state;
+  const [isLoading, setIsLoading] = useState(true);
+  const [sliderProduct, setSliderProduct] = useState([]);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const getSlider = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await axios.get(`/api/products/slider/${location}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        if (data.success) {
+          setSliderProduct(data.products);
+        } else {
+          console.log(data.message);
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+        setError(err.message);
+        setIsLoading(false);
+      }
+    };
+    getSlider();
+  }, [userInfo, location]);
+
   const sliderHandler = (direction) => {
     if (direction === "left") {
       var slider1 = document.getElementById("slider1");
@@ -42,16 +73,19 @@ export default function Slider() {
       slider2.scrollBy(100, 0);
     }
   };
-  return (
+  return isLoading ? (
+    <LoadingBox />
+  ) : error ? (
+    <MessageBox>{error}</MessageBox>
+  ) : !sliderProduct.length ? (
+    <MessageBox>No product Found</MessageBox>
+  ) : (
     <Container>
       <Button onClick={() => sliderHandler("left")}>PREV</Button>
       <Content id="slider1">
-        <SlideItem image="/images/p1.jpg" />
-        <SlideItem image="/images/p2.jpg" />
-        <SlideItem image="/images/p3.jpg" />
-        <SlideItem image="/images/p1.jpg" />
-        <SlideItem image="/images/p2.jpg" />
-        <SlideItem image="/images/p3.jpg" />
+        {sliderProduct.map((product) => (
+          <SlideItem product={product} key={product._id} />
+        ))}
       </Content>
       <Button onClick={() => sliderHandler("right")}>NEXT</Button>
     </Container>

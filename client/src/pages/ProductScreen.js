@@ -31,7 +31,7 @@ const Col = styled.div`
   }
 `;
 const Col1 = styled.div`
-  flex: 1;
+  flex: 3;
   padding: 30px;
   @media (max-width: 500px) {
     padding: 15px;
@@ -54,6 +54,7 @@ const SizeCont = styled.div`
   margin-top: 30px;
   margin-bottom: 20px;
   display: flex;
+  align-items: center;
 `;
 const SizeKey = styled.div`
   font-weight: 500;
@@ -70,8 +71,14 @@ const SizeValue = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   &:hover {
     color: ${color.main};
+  }
+  @media (max-width: 992px) {
+    margin: 0 10px;
+    width: 16px;
+    height: 16px;
   }
 `;
 
@@ -176,9 +183,15 @@ export default function ProductScreen() {
     };
     getProduct();
   }, [slug]);
-
+  const [selectedSize, setSelectedSize] = useState("");
+  const [sizeError, setSizeError] = useState("");
   const addToCart = (product) => {
-    ctxDispatch({ type: "ADD_TO_CART", payload: product });
+    setSizeError("");
+    if (!selectedSize) {
+      setSizeError("Please select size");
+      return;
+    }
+    ctxDispatch({ type: "ADD_TO_CART", payload: { ...product, selectedSize } });
   };
 
   return loading ? (
@@ -206,7 +219,7 @@ export default function ProductScreen() {
           <Image src={selectedImage} alt="img" />
           <SliderMobile images={[product.image, ...product.images]} />
         </Col>
-        <Col1>
+        <Col>
           <Name>{product.name}</Name>
           <div style={{ display: "flex", alignItems: "center" }}>
             <Price>
@@ -231,12 +244,13 @@ export default function ProductScreen() {
           <Icons></Icons>
           <SizeCont>
             <div>Select Size:</div>
-            {/* <SizeValue>XM</SizeValue>
-            <SizeValue>S</SizeValue>
-            <SizeValue>M</SizeValue>
-            <SizeValue>L</SizeValue>
-            <SizeValue>XL</SizeValue> */}
+            {product.size.map((s) => (
+              <SizeValue onClick={() => setSelectedSize(s.value)}>
+                {s.value}
+              </SizeValue>
+            ))}
           </SizeCont>
+          {sizeError && <div style={{ color: "red" }}> {sizeError}</div>}
           <CheckOutButton onClick={() => addToCart(product)}>
             ADD TO CART
           </CheckOutButton>
@@ -258,10 +272,10 @@ export default function ProductScreen() {
             ))}
           </p>
           <div style={{ width: "70%" }}>
-            <Description>Deatails and fit:</Description>
-            <p>{product.description}</p>
+            <Description>Details and fit:</Description>
+            <p>{product.detail}</p>
           </div>
-        </Col1>
+        </Col>
       </Content>
     </Container>
   );

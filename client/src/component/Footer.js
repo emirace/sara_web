@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
 
@@ -38,6 +39,7 @@ const Image = styled.img`
 `;
 
 export default function Footer() {
+  const navigate = useNavigate();
   return (
     <Container>
       <Content>
@@ -53,21 +55,21 @@ export default function Footer() {
         <Col>
           <Header>Navigation</Header>
           <Ul>
-            <Li>HomePage</Li>
-            <Li>Gallery</Li>
-            <Li>Catalogue</Li>
-            <Li>Book Order</Li>
-            <Li>Contact Us</Li>
+            <Li onClick={() => navigate("/")}>HomePage</Li>
+            <Li onClick={() => navigate("/gallery")}>Gallery</Li>
+            <Li onClick={() => navigate("/catalogue")}>Catalogue</Li>
+            <Li onClick={() => navigate("/bookorder")}>Book Order</Li>
+            <Li onClick={() => navigate("/about")}>Contact Us</Li>
           </Ul>
         </Col>
         <Col>
           <Header>Usefull Link</Header>
           <Ul>
-            <Li>All Products</Li>
-            <Li>Accesories</Li>
-            <Li>Bags</Li>
-            <Li>Casual</Li>
-            <Li>Owambe</Li>
+            <Li onClick={() => navigate("allproduct/")}>All Products</Li>
+            <Li onClick={() => navigate("/accesories")}>Accesories</Li>
+            <Li onClick={() => navigate("/bags")}>Bags</Li>
+            <Li onClick={() => navigate("/casual")}>Casual</Li>
+            <Li onClick={() => navigate("/owambe")}>Owambe</Li>
           </Ul>
         </Col>
         <Col>

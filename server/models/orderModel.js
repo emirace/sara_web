@@ -23,6 +23,7 @@ const orderSchema = new mongoose.Schema(
     },
     totalPrice: { type: Number, require: true },
     proof: { type: String, require: true },
+    status: { type: String, default: "Processing" },
   },
   {
     timestamps: true,

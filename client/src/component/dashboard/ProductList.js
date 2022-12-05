@@ -252,6 +252,11 @@ export default function ProductList({ setShowMobileMenu }) {
                     View
                   </View>
 
+                  <View
+                    onClick={() => navigate(`/editproduct/${product.slug}`)}
+                  >
+                    Edit
+                  </View>
                   <View onClick={() => deletehandle(product._id)}>Delete</View>
                   {loadingDelete && <LoadingBox />}
                 </div>

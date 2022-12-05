@@ -6,7 +6,7 @@ import { color, colorStyles } from "../constant/parameters";
 import axios from "axios";
 import { Store } from "../Store";
 import LoadingBox from "../component/LoadingBox";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { resizeImage } from "../component/ResizeImage";
 
 const Container = styled.div`
@@ -55,6 +55,12 @@ const ImageCont = styled.div`
   position: relative;
 `;
 
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
 const Close = styled.div`
   height: 35px;
   width: 35px;
@@ -67,12 +73,6 @@ const Close = styled.div`
   top: -16px;
   right: -16px;
   cursor: pointer;
-`;
-const Image = styled.img`
-  width: 150px;
-  height: 259px;
-  margin: 15px;
-  object-fit: cover;
 `;
 const Row = styled.div`
   display: flex;
@@ -183,24 +183,52 @@ const type = [
   { value: "Flat", label: "Flat" },
   { value: "Percent", label: "Percent" },
 ];
-export default function AddProductPage() {
+export default function EditProductPage() {
   const { state } = useContext(Store);
   const { userInfo, mode } = state;
+  const { slug } = useParams();
 
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [loadingEdit, setLoadingEdit] = useState(false);
   const [error, setError] = useState("");
 
   const [input, setInput] = useState({ discount: 0 });
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const getProduct = async () => {
+      setLoadingEdit(true);
+      try {
+        const { data } = await axios.get(`/api/products/product/${slug}`);
+        if (data.success) {
+          setLoadingEdit(false);
+          setInput({
+            ...data.product,
+            currency: {
+              value: data.product.currency,
+              label: data.product.currency,
+            },
+          });
+        } else {
+          setLoadingEdit(false);
+          setError(data.message);
+        }
+      } catch (err) {
+        console.log(err);
+        setError(err.message);
+        setLoadingEdit(false);
+      }
+    };
+    getProduct();
+  }, [slug]);
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      await axios.post(
-        "/api/products",
+      await axios.put(
+        `/api/products/${input._id}`,
         {
           image: input.image,
           category: input.category,
@@ -210,7 +238,7 @@ export default function AddProductPage() {
           size: input.size,
           price: input.price,
           discount: input.discount,
-          currency: input.currency,
+          currency: input.currency.value,
           isNigeria: input.isNigeria,
           countInStock: input.countInStock,
           description: input.description,
@@ -218,18 +246,6 @@ export default function AddProductPage() {
           deliveryTime: input.deliveryTime,
           priceNigeria: input.priceNigeria,
           slider: input.slider,
-        },
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-      await axios.post(
-        `/api/galleries`,
-        {
-          name: input.name,
-          image: input.image,
-          images,
-          description: input.description,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -340,9 +356,13 @@ export default function AddProductPage() {
   };
 
   const removeImage = (img, index) => {
+    console.log(img, index);
     if (index === 0) {
+      console.log("hello");
       handleOnChange("", "image");
     } else {
+      console.log("hello2");
+
       setImages(images.filter((i) => i !== img));
     }
   };
@@ -397,6 +417,7 @@ export default function AddProductPage() {
                   <Select
                     options={categories}
                     isMulti
+                    value={input.category}
                     styles={colorStyles}
                     onChange={(e) => handleOnChange(e, "category")}
                   />
@@ -414,6 +435,7 @@ export default function AddProductPage() {
                 <div style={{ width: "100%" }}>
                   <Input
                     type="text"
+                    value={input.name}
                     onChange={(e) => handleOnChange(e.target.value, "name")}
                   />
                 </div>
@@ -429,6 +451,7 @@ export default function AddProductPage() {
                 <Label>Material</Label>
                 <div style={{ width: "100%" }}>
                   <Input
+                    value={input.material}
                     type="text"
                     onChange={(e) => handleOnChange(e.target.value, "material")}
                   />
@@ -440,7 +463,6 @@ export default function AddProductPage() {
                   {error.material}
                 </div>
               )}
-
               <Row>
                 <Label>Available Size</Label>
                 <div style={{ width: "100%" }}>
@@ -467,6 +489,7 @@ export default function AddProductPage() {
                 <Label>Price</Label>
                 <div style={{ width: "100%" }}>
                   <Input
+                    value={input.price}
                     type="number"
                     onChange={(e) => handleOnChange(e.target.value, "price")}
                   />
@@ -478,14 +501,15 @@ export default function AddProductPage() {
                   {error.price}
                 </div>
               )}
-
+              {console.log(input)}
               <Row>
                 <Label>Currency</Label>
                 <div style={{ width: "100%" }}>
                   <Select
                     options={currency1}
+                    value={input.currency}
                     styles={colorStyles}
-                    onChange={(e) => handleOnChange(e.value, "currency")}
+                    onChange={(e) => handleOnChange(e, "currency")}
                   />
                 </div>
               </Row>
@@ -500,6 +524,7 @@ export default function AddProductPage() {
                 <Label>Product is Available in Nigeria</Label>
                 <Checkbox
                   mode={mode}
+                  checked={input.isNigeria}
                   type="checkbox"
                   onChange={(e) =>
                     handleOnChange(e.target.checked, "isNigeria")
@@ -512,6 +537,7 @@ export default function AddProductPage() {
                   <div style={{ width: "100%" }}>
                     <Input
                       type="number"
+                      value={input.priceNigeria}
                       onChange={(e) =>
                         handleOnChange(e.target.value, "priceNigeria")
                       }
@@ -530,6 +556,7 @@ export default function AddProductPage() {
                 <Label>Discount(%)</Label>
                 <div style={{ width: "100%" }}>
                   <Input
+                    value={input.discount}
                     type="number"
                     onChange={(e) => handleOnChange(e.target.value, "discount")}
                   />
@@ -541,6 +568,7 @@ export default function AddProductPage() {
                 <div style={{ width: "100%" }}>
                   <Input
                     type="number"
+                    value={input.countInStock}
                     onChange={(e) =>
                       handleOnChange(e.target.value, "countInStock")
                     }
@@ -565,7 +593,9 @@ export default function AddProductPage() {
                     onChange={(e) =>
                       handleOnChange(e.target.value, "description")
                     }
-                  ></Textarea>
+                  >
+                    {input.description}
+                  </Textarea>
                 </div>
               </Row>
               {error.description && (
@@ -600,6 +630,7 @@ export default function AddProductPage() {
                 <div style={{ width: "100%" }}>
                   <Input
                     type="number"
+                    value={input.deliveryTime}
                     onChange={(e) =>
                       handleOnChange(e.target.value, "deliveryTime")
                     }
@@ -614,6 +645,7 @@ export default function AddProductPage() {
                 <Label>Show product on slider</Label>
                 <Checkbox
                   mode={mode}
+                  checked={input.slider}
                   type="checkbox"
                   onChange={(e) => handleOnChange(e.target.checked, "slider")}
                 />
