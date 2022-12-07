@@ -46,10 +46,19 @@ export default function Footer() {
         <Col>
           <Logo>SARAH</Logo>
           <Text>
-            Saralz Collection was founded by a young african woman who hails
-            from Edo State, Nigeria. Her main passion is creating wears and
-            accessories with african prints. The brand has been existing as a
-            small scale business but was officially launched in 2022.
+            Saralz is a clothing brand with an initiative to partner with
+            creative minds with the aim of bringing the richness, beauty and
+            value of African culture to other parts of the world. We display the
+            vast use of African prints (popularly known as Ankara) to create and
+            design pieces ranging from casual wears, corporate wears, party
+            wears, mufflers, footwears, bags and accessories. The brand is also
+            keen on preserving the conventional method that function in African
+            tailor shop by availing to customers the possibility to book desired
+            wears with required measurements to fit. We offer custom made
+            outfits for your special occasions: wedding Guest(both sophisticated
+            and simple Asoebi dresses), prom dresses, red carpet dresses, dinner
+            dresses. Our outfit caters for both male and female demand. We also
+            sell ready to wear handmade African clothing and accessories.
           </Text>
         </Col>
         <Col>

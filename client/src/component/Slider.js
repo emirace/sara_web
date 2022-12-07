@@ -46,9 +46,7 @@ export default function Slider() {
     const getSlider = async () => {
       setIsLoading(true);
       try {
-        const { data } = await axios.get(`/api/products/slider/${location}`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(`/api/products/slider/${location}`);
         if (data.success) {
           setSliderProduct(data.products);
         } else {

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { color } from "../constant/parameters";
 
 const Container = styled.div`
-  width: 320px;
+  width: calc((100vw - 10vw) / 4);
   position: relative;
   height: 480px;
   background: white;
@@ -12,11 +12,17 @@ const Container = styled.div`
     opacity: 0.8;
     height: 240px;
   }
+  @media (max-width: 992px) {
+    width: calc(100vw - 10vw);
+  }
 `;
 const Image = styled.img`
   object-fit: cover;
   height: 100%;
-  width: 100%;
+  width: calc((100vw - 10vw) / 4);
+  @media (max-width: 992px) {
+    width: calc(100vw - 10vw);
+  }
 `;
 const Details = styled.div`
   position: absolute;
