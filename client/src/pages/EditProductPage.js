@@ -211,6 +211,7 @@ export default function EditProductPage() {
               label: data.product.currency,
             },
           });
+          setImages(data.product?.images);
         } else {
           setLoadingEdit(false);
           setError(data.message);

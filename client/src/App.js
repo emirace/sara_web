@@ -32,6 +32,7 @@ import AboutPage from "./pages/AboutPage";
 import CatalogueScreen from "./pages/CaralogueScreen";
 import EditProductPage from "./pages/EditProductPage";
 import ScrollToTop from "./component/ScrollToTop";
+import BagsPage from "./pages/BagsPage";
 
 const Container = styled.div`
   background: ${(prop) => (prop.mode === "darkmode" ? "black" : "#d4d4d4")};
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="casual" element={<CasualPage />} />
           <Route path="corporate" element={<CorporatePage />} />
           <Route path="owambe" element={<OwambePage />} />
+          <Route path="bags" element={<BagsPage />} />
           <Route path="accessories" element={<AccessoriesPage />} />
           <Route path="bookorder" element={<BookOrderScreen />} />
           <Route path="cart" element={<CartPage />} />

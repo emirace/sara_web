@@ -263,6 +263,10 @@ export default function Navbar() {
             <Li>
               <Link to="/accessories">ACCESSORIES</Link>
             </Li>
+            <Dot />
+            <Li>
+              <Link to="/bags">BAGS</Link>
+            </Li>
           </Row1>
         </Center1>
         <Right>

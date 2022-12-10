@@ -121,6 +121,11 @@ export default function MobileMenu() {
               <div>ACCESORIES</div> <BiChevronRight />
             </Li>
           </Link>
+          <Link to="/bags">
+            <Li onClick={() => setShowMenu(false)}>
+              <div>BAGS</div> <BiChevronRight />
+            </Li>
+          </Link>
         </MenuCont>
       )}
     </Container>

@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { color } from "../constant/parameters";
+import CollapseText from "./CollapseText";
 
 const Container = styled.div`
   padding: 5vw;
@@ -45,7 +46,7 @@ export default function Footer() {
       <Content>
         <Col>
           <Logo>SARAH</Logo>
-          <Text>
+          <CollapseText number={300}>
             Saralz is a clothing brand with an initiative to partner with
             creative minds with the aim of bringing the richness, beauty and
             value of African culture to other parts of the world. We display the
@@ -59,7 +60,7 @@ export default function Footer() {
             and simple Asoebi dresses), prom dresses, red carpet dresses, dinner
             dresses. Our outfit caters for both male and female demand. We also
             sell ready to wear handmade African clothing and accessories.
-          </Text>
+          </CollapseText>
         </Col>
         <Col>
           <Header>Navigation</Header>

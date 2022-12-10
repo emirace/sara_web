@@ -10,11 +10,13 @@ import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import ImagrModel from "../component/ImagrModel";
 import SliderMobile from "../component/SliderMobile";
+import CollapseText from "../component/CollapseText";
 
 const Container = styled.div`
-  padding: 5vw;
+  padding: 10px 5vw;
 `;
 const Content = styled.div`
+  margin-top: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-gap: 20px;
@@ -157,6 +159,18 @@ export default function Catalogue() {
   return (
     <Container>
       <H1>CATALOGUE</H1>
+      <CollapseText number={150}>
+        Dear esteemed customers, we would like to welcome you to the Saralz
+        Collection Catalogue. We guarantee to provide you with the best and
+        highest quality products and an outstanding customer service. The
+        catalogue section display designs from other designers who have put
+        their work on the internet space. The aim of the section is to guild
+        customers through style inspiration or idea when trying to book wears.
+        you can be inspired to book wears whilst going through the Catalogue
+        section. Should you need to seek and advice or request information on
+        what you would like, just send us a message. We look forward to serving
+        you!
+      </CollapseText>
       <Content>
         {loading ? (
           <LoadingBox />

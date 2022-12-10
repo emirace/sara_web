@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Model from "./Model";
 import SliderMobile from "./SliderMobile";
 import ImagrModel from "./ImagrModel";
+import { discountPrice } from "../utils/utils";
 
 const Product = styled.div`
   width: 100%;
@@ -23,13 +24,19 @@ const Product = styled.div`
     color: black;
   }
 `;
-const Image = styled.img`
+
+const ImageCont = styled.div`
+  position: relative;
   width: 100%;
   height: 400px;
-  object-fit: cover;
   @media (max-width: 992px) {
     height: 300px;
   }
+`;
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 const IconCont = styled.div`
   position: relative;
@@ -87,8 +94,29 @@ const Name = styled.div`
   color: white;
   margin-top: -3px;
 `;
+
+const Price = styled.div`
+  font-size: 11px;
+  font-weight: 600;
+  background: white;
+  color: ${color.main};
+  padding: 5px 7px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+`;
+
+const Discount = styled.span`
+  color: grey;
+  text-decoration: line-through;
+  font-weight: 300;
+  margin-left: 10px;
+  font-size: 9px;
+`;
+
 export default function GallaryProduct({ product }) {
-  const { dispatch: ctxDispatch } = useContext(Store);
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { location } = state;
   const [showModel, setShowModel] = useState(false);
 
   const addToCart = (product) => {
@@ -96,7 +124,21 @@ export default function GallaryProduct({ product }) {
   };
   return (
     <Product>
-      <Image src={`${product.image}`} alt="img" />
+      <ImageCont>
+        <Image src={`${product.image}`} alt="img" />
+        <Price>
+          {location === "NG" ? "NGN" : "EUR"}
+          {discountPrice(product, location)}
+          {product.discount && (
+            <Discount>
+              {location === "NG" ? "NGN" : "EUR"}
+              {location === "NG"
+                ? product.priceNigeria.toFixed(2)
+                : product.price.toFixed(2)}
+            </Discount>
+          )}
+        </Price>
+      </ImageCont>
       <Link to={`/product/${product.slug}`}>
         <Name className="name">{product.name}</Name>
       </Link>

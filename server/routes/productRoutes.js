@@ -264,11 +264,11 @@ productRouter.put(
       product.discount = req.body.discount || product.discount;
       product.deliveryTime = req.body.deliveryTime || product.deliveryTime;
       product.currency = req.body.currency || product.currency;
-      product.isNigeria = req.body.isNigeria || product.isNigeria;
+      product.isNigeria = req.body.isNigeria;
       product.countInStock = req.body.countInStock || product.countInStock;
       product.description = req.body.description || product.description;
       product.detail = req.body.detail || product.detail;
-      product.slider = req.body.slider || product.slider;
+      product.slider = req.body.slider;
 
       const newProduct = await product.save();
 

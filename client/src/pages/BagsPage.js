@@ -1,11 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import CollapseText from "../component/CollapseText";
+import GallaryProduct from "../component/GallaryProduct";
 import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
-import Product from "../component/Product";
 import { color } from "../constant/parameters";
+import { Store } from "../Store";
+import { products } from "../utils/data";
 
 const Container = styled.div`
   height: 100%;
@@ -34,16 +35,12 @@ const Item = styled.div`
     background: ${color.main};
     border: 0;
   }
-  &:hover {
-    background: ${color.main};
-    border: 0;
-  }
 `;
 
 const Content = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  grid-gap: 20px;
+  grid-gap: 30px;
   padding-bottom: 50px;
   border-bottom: 1px solid;
   @media (max-width: 992px) {
@@ -52,53 +49,66 @@ const Content = styled.div`
   }
 `;
 
-export default function GalleryScreen() {
+const images = [
+  { key: 1, src: "cat1.webp" },
+  { key: 2, src: "cat2.jpg" },
+  { key: 3, src: "cat3.jpg" },
+  { key: 4, src: "cat4.jpg" },
+  { key: 5, src: "cat5.jpg" },
+  { key: 6, src: "cat6.jpg" },
+  { key: 7, src: "cat7.jfif" },
+  { key: 8, src: "cat8.jfif" },
+  { key: 9, src: "cat9.webp" },
+  { key: 10, src: "cat10.png" },
+  { key: 11, src: "cat11.jpg" },
+  { key: 12, src: "cat12.webp" },
+];
+export default function BagsPage() {
+  const { state } = useContext(Store);
+  const { location } = state;
   const [loading, setLoading] = useState(true);
-  const [galleries, setGalleries] = useState(null);
+  const [products, setProducts] = useState(null);
   const [error, setError] = useState("");
   useEffect(() => {
-    const getGalleries = async () => {
+    const getProducts = async () => {
       try {
-        setLoading(true);
-        const { data } = await axios.get("/api/galleries/");
-        console.log(data);
-        setGalleries(data.galleries);
-        setLoading(false);
+        if (location) {
+          setLoading(true);
+          const { data } = await axios.get(`/api/products/Bags/${location}`);
+          console.log(data);
+          setProducts(data.products);
+          setLoading(false);
+        }
       } catch (err) {
         setError(err.message);
         setLoading(false);
       }
     };
-    getGalleries();
+    getProducts();
   }, []);
   return (
     <Container>
-      <h1 style={{ textAlign: "center" }}>GALLARY</h1>
-      <CollapseText number={150}>
-        Hello, esteemed customers. We are happy to welcome you to the Saralz
-        Collection Gallery. This section here, provides you with a detailed
-        description of all our products strictly from Saralz Collection. Here,
-        you can place an order on any of our product(s) as displayed on here.
-        Should you seek advice or request for information, please do well to
-        send us a message. We look forward to working with you!
-      </CollapseText>
+      <h1 style={{ textAlign: "center" }}>BAGS</h1>
       <Category>
         <Item className="active">ALL</Item>
         <Item>WOMEN</Item>
         <Item>MEN</Item>
         <Item>BOYS</Item>
         <Item>GIRLS</Item>
+        <Item>ACCESORIES</Item>
       </Category>
       <Content>
         {loading ? (
           <LoadingBox />
         ) : error ? (
-          <div>{error}</div>
-        ) : !galleries.length ? (
-          <MessageBox>No Image Found</MessageBox>
+          <MessageBox type="error">{error}</MessageBox>
+        ) : !products.length ? (
+          <MessageBox>No Product Found</MessageBox>
         ) : (
-          galleries.map((product) => (
-            <Product key={product._id} product={product} />
+          products.map((product) => (
+            <>
+              <GallaryProduct key={product._id} product={product} />
+            </>
           ))
         )}
       </Content>
