@@ -7,34 +7,11 @@ import MessageBox from "../component/MessageBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 import { products } from "../utils/data";
+import Filter from "./Filter";
 
 const Container = styled.div`
   height: 100%;
   padding: 0 5vw;
-`;
-const Category = styled.div`
-  display: flex;
-  padding: 50px 0;
-  overflow-x: auto;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-const Item = styled.div`
-  border: 1px solid;
-  padding: 10px 8px;
-  width: 100px;
-  text-align: center;
-  font-weight: 600;
-  margin: 0 5px;
-  font-size: 13px;
-  cursor: pointer;
-  &.active {
-    background: ${color.main};
-    border: 0;
-  }
 `;
 
 const Content = styled.div`
@@ -69,12 +46,15 @@ export default function OwambePage() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState(null);
   const [error, setError] = useState("");
+  const [selected, setSelected] = useState("ALL");
   useEffect(() => {
     const getProducts = async () => {
       try {
         if (location) {
           setLoading(true);
-          const { data } = await axios.get(`/api/products/Owambe/${location}`);
+          const { data } = await axios.get(
+            `/api/products/Owambe/${location}?query=${selected}`
+          );
           console.log(data);
           setProducts(data.products);
           setLoading(false);
@@ -85,18 +65,11 @@ export default function OwambePage() {
       }
     };
     getProducts();
-  }, []);
+  }, [selected]);
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}>OWAMBE</h1>
-      <Category>
-        <Item className="active">ALL</Item>
-        <Item>WOMEN</Item>
-        <Item>MEN</Item>
-        <Item>BOYS</Item>
-        <Item>GIRLS</Item>
-        <Item>ACCESORIES</Item>
-      </Category>
+      <Filter setSelected={setSelected} selected={selected} />
       <Content>
         {loading ? (
           <LoadingBox />

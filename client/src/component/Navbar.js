@@ -253,7 +253,7 @@ export default function Navbar() {
             </Li>
             <Dot />
             <Li>
-              <Link to="/corporate">COROPERATE</Link>
+              <Link to="/corporate">CORPERATE</Link>
             </Li>
             <Dot />
             <Li>

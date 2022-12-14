@@ -151,13 +151,26 @@ productRouter.get(
   "/:category/:location",
   expressAsyncHandler(async (req, res) => {
     const { category, location } = req.params;
-    console.log(category);
+    const { query } = req.query;
     const locationFilter =
       location === "NG"
         ? {
             isNigeria: true,
           }
         : {};
+    const queryFilter =
+      query && query !== "ALL"
+        ? {
+            subCategory: {
+              $elemMatch: {
+                value: {
+                  $in: [query],
+                },
+              },
+            },
+          }
+        : {};
+
     const products = await Product.find({
       category: {
         $elemMatch: {
@@ -167,6 +180,7 @@ productRouter.get(
         },
       },
       ...locationFilter,
+      ...queryFilter,
     }).sort({
       createdAt: -1,
     });
@@ -211,6 +225,7 @@ productRouter.post(
       image: req.body.image,
       images: req.body.images,
       category: req.body.category,
+      subCategory: req.body.subCategory,
       size: req.body.size,
       material: req.body.material,
       priceNigeria: req.body.priceNigeria,
@@ -257,6 +272,7 @@ productRouter.put(
       product.image = req.body.image || product.image;
       product.images = req.body.images || product.images;
       product.category = req.body.category || product.category;
+      product.subCategory = req.body.subCategory || product.subCategory;
       product.size = req.body.size || product.size;
       product.material = req.body.material || product.material;
       product.price = req.body.price || product.price;

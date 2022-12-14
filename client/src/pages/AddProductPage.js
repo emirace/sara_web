@@ -167,6 +167,12 @@ const categories = [
   { value: "Accesories", label: "Accesories" },
   { value: "Bags", label: "Bags" },
 ];
+const subCategories = [
+  { value: "WOMEN", label: "WOMEN" },
+  { value: "MEN", label: "MEN" },
+  { value: "BOYS", label: "BOYS" },
+  { value: "GIRLS", label: "GIRLS" },
+];
 const sizes = [
   { value: "S", label: "S" },
   { value: "M", label: "M" },
@@ -204,6 +210,7 @@ export default function AddProductPage() {
         {
           image: input.image,
           category: input.category,
+          subCategory: input.subCategory,
           name: input.name,
           images,
           material: input.material,
@@ -408,6 +415,18 @@ export default function AddProductPage() {
                   {error.category}
                 </div>
               )}
+
+              <Row>
+                <Label>Select Sub Category</Label>
+                <div style={{ width: "100%" }}>
+                  <Select
+                    options={subCategories}
+                    isMulti
+                    styles={colorStyles}
+                    onChange={(e) => handleOnChange(e, "subCategory")}
+                  />
+                </div>
+              </Row>
 
               <Row>
                 <Label>Product Name</Label>

@@ -108,7 +108,7 @@ export default function MobileMenu() {
           </Link>
           <Link to="/corporate">
             <Li onClick={() => setShowMenu(false)}>
-              <div>COROPERATE</div> <BiChevronRight />
+              <div>CORPERATE</div> <BiChevronRight />
             </Li>
           </Link>
           <Link to="/owambe">

@@ -129,7 +129,7 @@ export default function BookOrderDetailPage() {
         }
       );
       if (data.success) {
-        setOrder(data.order);
+        setOrder(data.bookOrder);
       }
     } catch (err) {
       console.log(err);

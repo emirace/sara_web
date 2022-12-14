@@ -135,7 +135,7 @@ export default function DashboardPage() {
             setShowMobileMenu(false);
           }}
         >
-          <BsImages color="plain" /> Galleries
+          <BsImages color="plain" /> Gallery
         </Option>
         <Option
           onClick={() => {
@@ -143,7 +143,7 @@ export default function DashboardPage() {
             setShowMobileMenu(false);
           }}
         >
-          <BiBookOpen /> Catalogues
+          <BiBookOpen /> Catalogue
         </Option>
         <Title>Notification</Title>
         <Option>

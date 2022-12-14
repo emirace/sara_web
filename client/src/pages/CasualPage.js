@@ -6,6 +6,7 @@ import LoadingBox from "../component/LoadingBox";
 import MessageBox from "../component/MessageBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
+import Filter from "./Filter";
 
 const Container = styled.div`
   height: 100%;
@@ -54,12 +55,16 @@ export default function CasualPage() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState(null);
   const [error, setError] = useState("");
+  const [selected, setSelected] = useState("ALL");
+
   useEffect(() => {
     const getProducts = async () => {
       try {
         if (location) {
           setLoading(true);
-          const { data } = await axios.get(`/api/products/Casual/${location}`);
+          const { data } = await axios.get(
+            `/api/products/Casual/${location}?query=${selected}`
+          );
           console.log(data);
           setProducts(data.products);
           setLoading(false);
@@ -70,18 +75,12 @@ export default function CasualPage() {
       }
     };
     getProducts();
-  }, []);
+  }, [selected]);
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}>CASUAL</h1>
-      <Category>
-        <Item className="active">ALL</Item>
-        <Item>WOMEN</Item>
-        <Item>MEN</Item>
-        <Item>BOYS</Item>
-        <Item>GIRLS</Item>
-        <Item>ACCESORIES</Item>
-      </Category>
+      <Filter setSelected={setSelected} selected={selected} />
+
       <Content>
         {loading ? (
           <LoadingBox />

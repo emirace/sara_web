@@ -7,6 +7,7 @@ import MessageBox from "../component/MessageBox";
 import { color } from "../constant/parameters";
 import { Store } from "../Store";
 import { products } from "../utils/data";
+import Filter from "./Filter";
 
 const Container = styled.div`
   height: 100%;
@@ -55,13 +56,15 @@ export default function AccessoriesPage() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState(null);
   const [error, setError] = useState("");
+  const [selected, setSelected] = useState("ALL");
+
   useEffect(() => {
     const getProducts = async () => {
       try {
         if (location) {
           setLoading(true);
           const { data } = await axios.get(
-            `/api/products/Accesories/${location}`
+            `/api/products/Accesories/${location}?query=${selected}`
           );
           console.log(data);
           setProducts(data.products);
@@ -73,18 +76,12 @@ export default function AccessoriesPage() {
       }
     };
     getProducts();
-  }, []);
+  }, [selected]);
   return (
     <Container>
       <h1 style={{ textAlign: "center" }}>ACCESORIES</h1>
-      <Category>
-        <Item className="active">ALL</Item>
-        <Item>WOMEN</Item>
-        <Item>MEN</Item>
-        <Item>BOYS</Item>
-        <Item>GIRLS</Item>
-        <Item>ACCESORIES</Item>
-      </Category>
+      <Filter setSelected={setSelected} selected={selected} />
+
       <Content>
         {loading ? (
           <LoadingBox />
