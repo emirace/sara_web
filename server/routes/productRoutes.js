@@ -5,10 +5,12 @@ import { body, validationResult } from "express-validator";
 import { isAdmin, isAuth, slugify } from "../utils.js";
 const productRouter = express.Router();
 
+const pageSize = 10;
 productRouter.get(
   "/search",
   expressAsyncHandler(async (req, res) => {
     const { query } = req;
+    const page = query.page || 1;
     const searchQuery = query.query || "";
     const category = query.category || "";
     const price = query.price || "";
@@ -39,14 +41,15 @@ productRouter.get(
           }
         : {};
     const categoryFilter = category && category !== "all" ? { category } : {};
-    price && price !== "all"
-      ? {
-          price: {
-            $gte: Number(price.split("-")[0]),
-            $lte: Number(price.split("-")[1]),
-          },
-        }
-      : {};
+    const priceFilter =
+      price && price !== "all"
+        ? {
+            price: {
+              $gte: Number(price.split("-")[0]),
+              $lte: Number(price.split("-")[1]),
+            },
+          }
+        : {};
 
     const sortOrder =
       order === "lowest"
@@ -62,7 +65,10 @@ productRouter.get(
       ...queryFilter,
       ...categoryFilter,
       ...priceFilter,
-    }).sort(sortOrder);
+    })
+      .sort(sortOrder)
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
 
     const countProducts = await Product.countDocuments({
       ...queryFilter,
@@ -82,6 +88,8 @@ productRouter.get(
 productRouter.get(
   "/all/:location",
   expressAsyncHandler(async (req, res) => {
+    const page = req.query.page || 1;
+
     const { location } = req.params;
     const locationFilter =
       location === "NG"
@@ -89,9 +97,12 @@ productRouter.get(
             isNigeria: true,
           }
         : {};
-    const products = await Product.find({ ...locationFilter }).sort({
-      createdAt: -1,
-    });
+    const products = await Product.find({ ...locationFilter })
+      .sort({
+        createdAt: -1,
+      })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send({
       success: true,
       message: "Sucessfully",
@@ -151,7 +162,8 @@ productRouter.get(
   "/:category/:location",
   expressAsyncHandler(async (req, res) => {
     const { category, location } = req.params;
-    const { query } = req.query;
+    const { query } = req;
+    const page = query.page || 1;
     const locationFilter =
       location === "NG"
         ? {
@@ -159,18 +171,17 @@ productRouter.get(
           }
         : {};
     const queryFilter =
-      query && query !== "ALL"
+      query.query && query.query !== "ALL"
         ? {
             subCategory: {
               $elemMatch: {
                 value: {
-                  $in: [query],
+                  $in: [query.query],
                 },
               },
             },
           }
         : {};
-
     const products = await Product.find({
       category: {
         $elemMatch: {
@@ -179,11 +190,14 @@ productRouter.get(
           },
         },
       },
-      ...locationFilter,
       ...queryFilter,
-    }).sort({
-      createdAt: -1,
-    });
+      ...locationFilter,
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send({
       success: true,
       message: "Sucessfully",
@@ -302,7 +316,7 @@ productRouter.put(
   })
 );
 
-//search product
+//delete product
 
 productRouter.delete(
   "/:id",

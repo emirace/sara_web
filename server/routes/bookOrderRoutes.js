@@ -4,13 +4,20 @@ import BookOrder from "../models/bookOrderModel.js";
 import { isAdmin, isAuth, slugify } from "../utils.js";
 const bookOrderRouter = express.Router();
 
+const pageSize = 10;
+
 // get all bookOrder
 bookOrderRouter.get(
   "/",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const bookOrders = await BookOrder.find().sort({ createdAt: -1 });
+    const page = req.query.page || 1;
+
+    const bookOrders = await BookOrder.find()
+      .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send({
       success: true,
       message: "Sucessfully",
@@ -56,7 +63,7 @@ bookOrderRouter.post(
       buyer: req.body.buyer,
       gender: req.body.gender,
       measurement: req.body.measurement,
-      proof: req.body.proof,
+      // proof: req.body.proof,
     });
 
     const newBookOrder = await bookOrder.save();

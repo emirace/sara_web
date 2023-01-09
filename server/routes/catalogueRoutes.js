@@ -5,10 +5,15 @@ import { isAdmin, isAuth, slugify } from "../utils.js";
 const catalogueRouter = express.Router();
 
 // get all catalogue
+const pageSize = 10;
 catalogueRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const catalogues = await Catalogue.find().sort({ createdAt: -1 });
+    const page = req.query.page || 1;
+    const catalogues = await Catalogue.find()
+      .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send({
       success: true,
       message: "Sucessfully",

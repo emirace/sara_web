@@ -4,11 +4,16 @@ import Gallery from "../models/galleryModel.js";
 import { isAdmin, isAuth, slugify } from "../utils.js";
 const galleryRouter = express.Router();
 
+const pageSize = 10;
 // get all gallery
 galleryRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const galleries = await Gallery.find().sort({ createdAt: -1 });
+    const page = req.query.page || 1;
+    const galleries = await Gallery.find()
+      .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send({
       success: true,
       message: "Sucessfully",

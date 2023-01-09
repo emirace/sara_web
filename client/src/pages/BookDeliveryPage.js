@@ -110,6 +110,7 @@ const CheckOutButton = styled.div`
   cursor: pointer;
   font-weight: bold;
   margin-top: 30px;
+  margin-right: 20px;
   padding: 8px;
   &:hover {
     color: black;
@@ -294,11 +295,11 @@ export default function BookDeliveryPage() {
     setTab("payment");
   };
 
-  const handleOrder = async () => {
-    if (!input.proof) {
-      handleError("Please upload an image of receipt", "proof");
-      return;
-    }
+  const handleOrder = async (social) => {
+    // if (!input.proof) {
+    //   handleError("Please upload an image of receipt", "proof");
+    //   return;
+    // }
     setLoading(true);
     try {
       const { data } = await axios.post("/api/bookorders", {
@@ -320,8 +321,12 @@ export default function BookDeliveryPage() {
       });
       console.log(data);
       if (data.success) {
-        console.log("hello");
-        navigate(`/ordercreated/bookorder/${data.bookOrder._id}`);
+        if (social === "Whatsapp") {
+          window.location.replace(`https://web.whatsapp.com`);
+        } else {
+          window.location.replace(`https://google.com`);
+        }
+        // navigate(`/ordercreated/bookorder/${data.bookOrder._id}`);
       }
     } catch (err) {
       console.log(err);
@@ -471,7 +476,7 @@ export default function BookDeliveryPage() {
               <LoadingBox />
             ) : (
               <Form>
-                <OptionCont>
+                {/* <OptionCont>
                   <Label>Account Number</Label>
                   <Label>{account.accountNumber}</Label>
                 </OptionCont>
@@ -512,10 +517,12 @@ export default function BookDeliveryPage() {
                     style={{ display: "none" }}
                     onChange={(e) => handleResize(e)}
                   />
-                </OptionCont>
-
+                </OptionCont> */}
+                <div>Complete Order on</div>
                 <ButtonCont>
-                  <CheckOutButton onClick={loading ? "" : handleOrder}>
+                  <CheckOutButton
+                    onClick={loading ? "" : () => handleOrder("Whatsapp")}
+                  >
                     {loading ? (
                       <LoadingBox
                         comn="inline"
@@ -524,7 +531,21 @@ export default function BookDeliveryPage() {
                         width={30}
                       />
                     ) : (
-                      "Order"
+                      "Whatsapp"
+                    )}
+                  </CheckOutButton>
+                  <CheckOutButton
+                    onClick={loading ? "" : () => handleOrder("Instagram")}
+                  >
+                    {loading ? (
+                      <LoadingBox
+                        comn="inline"
+                        type="bubbles"
+                        height={30}
+                        width={30}
+                      />
+                    ) : (
+                      "Instagram"
                     )}
                   </CheckOutButton>
                   <Back onClick={() => setTab("delivery")}>Back</Back>

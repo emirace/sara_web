@@ -4,13 +4,18 @@ import Order from "../models/orderModel.js";
 import { isAdmin, isAuth, slugify } from "../utils.js";
 const orderRouter = express.Router();
 
+const pageSize = 10;
 // get all order
 orderRouter.get(
   "/",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const page = req.query.page || 1;
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .skip(pageSize * (page - 1))
+      .limit(pageSize);
     res.send({
       success: true,
       message: "Sucessfully",
